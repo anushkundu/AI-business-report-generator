@@ -1,16 +1,31 @@
 # src/utils/llm_client.py
 
 """
-LLM CLIENT — Supports OpenAI + Google Gemini (FREE)
+LLM CLIENT — OpenAI + Google Gemini
+Works locally (.env) and on Streamlit Cloud (secrets)
 """
 
 import json
 import time
+import os
 from typing import Optional, Dict
+from dotenv import load_dotenv
 from src.utils.config import config
 from src.utils.logger import logger
 
-# Try importing both providers
+load_dotenv()
+
+# Load Streamlit Cloud secrets
+try:
+    import streamlit as st
+    if hasattr(st, 'secrets'):
+        for key in ['OPENAI_API_KEY', 'GOOGLE_API_KEY']:
+            if key in st.secrets:
+                os.environ[key] = st.secrets[key]
+except Exception:
+    pass
+
+# Import providers
 try:
     from openai import OpenAI, RateLimitError, APIError, APIConnectionError
     OPENAI_AVAILABLE = True
@@ -32,20 +47,20 @@ except ImportError:
 
 class LLMClient:
     """
-    LLM client supporting OpenAI and Google Gemini (free).
+    LLM client supporting OpenAI and Google Gemini.
 
     Priority:
-    1. If OPENAI_API_KEY exists and has credits → use OpenAI
-    2. If GOOGLE_API_KEY exists → use Gemini (FREE)
-    3. If neither → LLM features disabled
+    1. OpenAI (if key exists + has credits)
+    2. Gemini 2.5 Flash (FREE)
     """
+
+    GEMINI_MODEL = "gemini-2.5-flash"
 
     def __init__(self):
         self.provider = None
         self.openai_client = None
         self.gemini_model = None
 
-        # Session tracking
         self.session_stats = {
             "total_calls": 0,
             "total_input_tokens": 0,
@@ -55,34 +70,42 @@ class LLMClient:
             "provider": "none",
         }
 
-        # Try OpenAI first
-        if OPENAI_AVAILABLE and config.OPENAI_API_KEY:
+        # ── Try OpenAI first ───────────────────────────
+        openai_key = os.getenv("OPENAI_API_KEY", "")
+        if OPENAI_AVAILABLE and openai_key:
             try:
-                self.openai_client = OpenAI(api_key=config.OPENAI_API_KEY)
+                self.openai_client = OpenAI(api_key=openai_key)
                 self.provider = "openai"
                 self.session_stats["provider"] = "openai"
-                logger.info("LLM Provider: OpenAI")
+                logger.info("✅ LLM Provider: OpenAI")
             except Exception as e:
                 logger.warning(f"OpenAI init failed: {e}")
 
-        # Try Gemini as fallback
-        if self.provider is None and GEMINI_AVAILABLE:
-            import os
-            google_key = os.getenv("GOOGLE_API_KEY", "")
-            if google_key:
-                try:
-                    genai.configure(api_key=google_key)
-                    self.gemini_model = genai.GenerativeModel('gemini-2.5-flash')
-                    self.provider = "gemini"
-                    self.session_stats["provider"] = "gemini (free)"
-                    logger.info("LLM Provider: Google Gemini (FREE)")
-                except Exception as e:
-                    logger.warning(f"Gemini init failed: {e}")
+        # ── Try Gemini as fallback ─────────────────────
+        google_key = os.getenv("GOOGLE_API_KEY", "")
+        if self.provider is None and GEMINI_AVAILABLE and google_key:
+            try:
+                genai.configure(api_key=google_key)
+                self.gemini_model = genai.GenerativeModel(self.GEMINI_MODEL)
+                self.provider = "gemini"
+                self.session_stats["provider"] = f"gemini ({self.GEMINI_MODEL}) FREE"
+                logger.info(f"✅ LLM Provider: Gemini ({self.GEMINI_MODEL}) FREE")
+            except Exception as e:
+                logger.warning(f"Gemini init failed: {e}")
+
+        # Also keep Gemini ready as fallback even if OpenAI is primary
+        if self.provider == "openai" and GEMINI_AVAILABLE and google_key:
+            try:
+                genai.configure(api_key=google_key)
+                self.gemini_model = genai.GenerativeModel(self.GEMINI_MODEL)
+                logger.info("Gemini ready as fallback")
+            except Exception:
+                pass
 
         if self.provider is None:
             logger.warning(
                 "No LLM provider available. "
-                "Set OPENAI_API_KEY or GOOGLE_API_KEY in .env"
+                "Set OPENAI_API_KEY or GOOGLE_API_KEY"
             )
 
         # Token counter
@@ -104,22 +127,39 @@ class LLMClient:
                  max_tokens: Optional[int] = None,
                  model: Optional[str] = None,
                  json_mode: bool = False) -> str:
-        """Generate text from LLM (OpenAI or Gemini)."""
+        """Generate text from best available provider."""
 
         if self.provider == "openai":
-            return self._generate_openai(
-                prompt, system_prompt, temperature,
-                max_tokens, model, json_mode
-            )
+            try:
+                return self._generate_openai(
+                    prompt, system_prompt, temperature,
+                    max_tokens, model, json_mode
+                )
+            except Exception as e:
+                error_msg = str(e).lower()
+                # If OpenAI fails (quota/billing), try Gemini
+                if any(word in error_msg for word in
+                       ["quota", "exceeded", "billing", "insufficient"]):
+                    logger.warning("OpenAI quota exceeded — switching to Gemini")
+                    if self.gemini_model:
+                        self.provider = "gemini"
+                        self.session_stats["provider"] = f"gemini ({self.GEMINI_MODEL}) FREE"
+                        return self._generate_gemini(
+                            prompt, system_prompt, temperature,
+                            max_tokens, json_mode
+                        )
+                raise
+
         elif self.provider == "gemini":
             return self._generate_gemini(
                 prompt, system_prompt, temperature,
                 max_tokens, json_mode
             )
+
         else:
             raise Exception(
                 "No LLM provider configured. "
-                "Add OPENAI_API_KEY or GOOGLE_API_KEY to .env"
+                "Add OPENAI_API_KEY or GOOGLE_API_KEY to .env or Streamlit secrets."
             )
 
 
@@ -127,13 +167,11 @@ class LLMClient:
                             prompt: str,
                             system_prompt: Optional[str] = None,
                             model: Optional[str] = None) -> Dict:
-        """Generate structured JSON output."""
+        """Generate JSON output."""
 
         raw = self.generate(
-            prompt=prompt,
-            system_prompt=system_prompt,
-            json_mode=True,
-            model=model,
+            prompt=prompt, system_prompt=system_prompt,
+            json_mode=True, model=model,
         )
 
         try:
@@ -143,13 +181,13 @@ class LLMClient:
 
 
     # ═══════════════════════════════════════════════════════
-    # OPENAI PROVIDER
+    # OPENAI
     # ═══════════════════════════════════════════════════════
 
     def _generate_openai(self, prompt, system_prompt,
                           temperature, max_tokens,
                           model, json_mode):
-        """Generate using OpenAI API."""
+        """Generate using OpenAI."""
 
         model = model or config.MODEL_NAME
         temperature = temperature if temperature is not None else config.TEMPERATURE
@@ -179,97 +217,60 @@ class LLMClient:
                 )
 
                 response = self.openai_client.chat.completions.create(**kwargs)
-
                 content = response.choices[0].message.content
-                output_tokens = response.usage.completion_tokens
-                input_tokens = response.usage.prompt_tokens
+                in_tokens = response.usage.prompt_tokens
+                out_tokens = response.usage.completion_tokens
 
-                cost = self._calculate_cost(input_tokens, output_tokens, model)
-                self._track_call(model, input_tokens, output_tokens, cost)
+                cost = self._calculate_cost(in_tokens, out_tokens, model)
+                self._track_call(model, in_tokens, out_tokens, cost)
 
+                logger.info(f"✅ OpenAI: {out_tokens} tokens, ${cost:.4f}")
                 return content
 
             except RateLimitError as e:
                 last_error = e
-
-                # Check if it's a quota error (no money)
                 error_msg = str(e).lower()
+
                 if "insufficient_quota" in error_msg or "exceeded" in error_msg:
-                    logger.warning("OpenAI quota exceeded — switching to Gemini if available")
+                    raise  # Let main generate() handle fallback
 
-                    # Try Gemini fallback
-                    if GEMINI_AVAILABLE:
-                        import os
-                        google_key = os.getenv("GOOGLE_API_KEY", "")
-                        if google_key:
-                            genai.configure(api_key=google_key)
-                            self.gemini_model = genai.GenerativeModel('gemini-2.5-flash')
-                            self.provider = "gemini"
-                            self.session_stats["provider"] = "gemini (fallback)"
-                            logger.info("Switched to Gemini (free)")
-                            return self._generate_gemini(
-                                prompt, system_prompt,
-                                temperature, max_tokens, False
-                            )
+                wait = config.RETRY_DELAY * (2 ** attempt)
+                logger.warning(f"Rate limited. Waiting {wait}s...")
+                time.sleep(wait)
 
-                    raise Exception(
-                        "OpenAI quota exceeded and no Gemini key available. "
-                        "Either add credits at platform.openai.com/settings/organization/billing "
-                        "or add GOOGLE_API_KEY to .env for free Gemini access."
-                    )
-
-                # Regular rate limit — retry
-                wait_time = config.RETRY_DELAY * (2 ** attempt)
-                logger.warning(f"Rate limited. Waiting {wait_time}s...")
-                time.sleep(wait_time)
-
-            except APIConnectionError as e:
+            except (APIConnectionError, APIError) as e:
                 last_error = e
-                wait_time = config.RETRY_DELAY * (2 ** attempt)
-                logger.warning(f"Connection error. Waiting {wait_time}s...")
-                time.sleep(wait_time)
-
-            except APIError as e:
-                last_error = e
-                logger.error(f"API error: {e}")
-                if model == config.MODEL_NAME_ADVANCED:
-                    kwargs["model"] = config.MODEL_NAME
-                    model = config.MODEL_NAME
-                else:
-                    time.sleep(config.RETRY_DELAY * (2 ** attempt))
+                wait = config.RETRY_DELAY * (2 ** attempt)
+                time.sleep(wait)
 
             except Exception as e:
                 last_error = e
-                logger.error(f"Unexpected error: {e}")
                 break
 
-        raise Exception(
-            f"LLM generation failed after {config.MAX_RETRIES} attempts: {last_error}"
-        )
+        raise Exception(f"OpenAI failed: {last_error}")
 
 
     # ═══════════════════════════════════════════════════════
-    # GEMINI PROVIDER (FREE)
+    # GEMINI (FREE)
     # ═══════════════════════════════════════════════════════
 
     def _generate_gemini(self, prompt, system_prompt,
                           temperature, max_tokens, json_mode):
-        """Generate using Google Gemini API (FREE)."""
+        """Generate using Google Gemini (FREE)."""
 
         temperature = temperature if temperature is not None else config.TEMPERATURE
         max_tokens = max_tokens or config.MAX_TOKENS
 
-        # Combine system prompt and user prompt
+        # Combine system + user prompt
         full_prompt = ""
         if system_prompt:
             full_prompt = f"SYSTEM INSTRUCTIONS:\n{system_prompt}\n\n"
         full_prompt += f"USER REQUEST:\n{prompt}"
 
         if json_mode:
-            full_prompt += "\n\nIMPORTANT: Return ONLY valid JSON. No markdown, no explanation."
+            full_prompt += "\n\nIMPORTANT: Return ONLY valid JSON. No markdown, no extra text."
 
-        # Estimate input tokens
-        input_tokens = len(full_prompt) // 4
+        in_tokens = len(full_prompt) // 4
 
         last_error = None
         for attempt in range(config.MAX_RETRIES):
@@ -279,94 +280,89 @@ class LLMClient:
                     f"(attempt={attempt + 1})"
                 )
 
-                generation_config = genai.types.GenerationConfig(
+                gen_config = genai.types.GenerationConfig(
                     temperature=temperature,
                     max_output_tokens=max_tokens,
                 )
 
                 response = self.gemini_model.generate_content(
                     full_prompt,
-                    generation_config=generation_config,
+                    generation_config=gen_config,
                 )
 
                 content = response.text
+                out_tokens = len(content) // 4
 
-                # Estimate output tokens
-                output_tokens = len(content) // 4
-
-                # Gemini is FREE — cost = $0
                 self._track_call(
-                    "gemini-2.5-flash", input_tokens, output_tokens, 0.0
+                    self.GEMINI_MODEL, in_tokens, out_tokens, 0.0
                 )
 
-                logger.info(f"Gemini response: ~{output_tokens} tokens (FREE)")
-
+                logger.info(f"✅ Gemini: ~{out_tokens} tokens (FREE)")
                 return content
 
             except Exception as e:
                 last_error = e
-                logger.warning(f"Gemini error (attempt {attempt + 1}): {e}")
-                time.sleep(config.RETRY_DELAY * (2 ** attempt))
+                error_msg = str(e).lower()
+                logger.warning(f"Gemini attempt {attempt + 1}: {e}")
 
-        raise Exception(
-            f"Gemini generation failed after {config.MAX_RETRIES} attempts: {last_error}"
-        )
+                if "429" in error_msg or "quota" in error_msg:
+                    wait = 30 * (attempt + 1)
+                    logger.info(f"Rate limited. Waiting {wait}s...")
+                    time.sleep(wait)
+                else:
+                    time.sleep(config.RETRY_DELAY * (2 ** attempt))
+
+        raise Exception(f"Gemini failed: {last_error}")
 
 
     # ═══════════════════════════════════════════════════════
     # HELPERS
     # ═══════════════════════════════════════════════════════
 
-    def _calculate_cost(self, input_tokens, output_tokens, model):
-        """Calculate cost (only for OpenAI — Gemini is free)."""
+    def _calculate_cost(self, in_tokens, out_tokens, model):
+        """Calculate cost (OpenAI only — Gemini is free)."""
 
         if "gemini" in model.lower():
             return 0.0
 
         if model == config.MODEL_NAME_ADVANCED:
-            input_cost = (input_tokens / 1_000_000) * config.COST_PER_1M_INPUT_ADVANCED
-            output_cost = (output_tokens / 1_000_000) * config.COST_PER_1M_OUTPUT_ADVANCED
-        else:
-            input_cost = (input_tokens / 1_000_000) * config.COST_PER_1M_INPUT_TOKENS
-            output_cost = (output_tokens / 1_000_000) * config.COST_PER_1M_OUTPUT_TOKENS
+            return round(
+                (in_tokens / 1e6) * config.COST_PER_1M_INPUT_ADVANCED +
+                (out_tokens / 1e6) * config.COST_PER_1M_OUTPUT_ADVANCED, 6
+            )
+        return round(
+            (in_tokens / 1e6) * config.COST_PER_1M_INPUT_TOKENS +
+            (out_tokens / 1e6) * config.COST_PER_1M_OUTPUT_TOKENS, 6
+        )
 
-        return round(input_cost + output_cost, 6)
 
-
-    def _track_call(self, model, input_tokens, output_tokens, cost):
+    def _track_call(self, model, in_tokens, out_tokens, cost):
         """Track API call stats."""
 
         self.session_stats["total_calls"] += 1
-        self.session_stats["total_input_tokens"] += input_tokens
-        self.session_stats["total_output_tokens"] += output_tokens
+        self.session_stats["total_input_tokens"] += in_tokens
+        self.session_stats["total_output_tokens"] += out_tokens
         self.session_stats["total_cost_usd"] += cost
         self.session_stats["calls_detail"].append({
             "model": model,
-            "input_tokens": input_tokens,
-            "output_tokens": output_tokens,
+            "input_tokens": in_tokens,
+            "output_tokens": out_tokens,
             "cost": cost,
         })
 
 
     def _extract_json(self, text):
-        """Try to extract JSON from text."""
+        """Extract JSON from text."""
 
         import re
-
-        json_match = re.search(r'```json\s*(.*?)\s*```', text, re.DOTALL)
-        if json_match:
-            try:
-                return json.loads(json_match.group(1))
-            except json.JSONDecodeError:
-                pass
-
-        brace_match = re.search(r'\{.*\}', text, re.DOTALL)
-        if brace_match:
-            try:
-                return json.loads(brace_match.group())
-            except json.JSONDecodeError:
-                pass
-
+        for pattern in [r'```json\s*(.*?)\s*```', r'\{.*\}']:
+            match = re.search(pattern, text, re.DOTALL)
+            if match:
+                try:
+                    content = match.group(1) if '```' in pattern else match.group()
+                    return json.loads(content)
+                except json.JSONDecodeError:
+                    continue
         return {"raw_text": text, "parse_error": True}
 
 
@@ -377,15 +373,15 @@ class LLMClient:
             "total_cost_formatted": (
                 f"${self.session_stats['total_cost_usd']:.4f}"
                 if self.session_stats['total_cost_usd'] > 0
-                else "FREE"
+                else "FREE (Gemini)"
             ),
         }
 
 
     def is_available(self) -> bool:
-        """Check if any LLM provider is configured."""
+        """Check if any provider is configured."""
         return self.provider is not None
 
 
-# Create singleton
+# Singleton
 llm = LLMClient()
