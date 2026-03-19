@@ -1,0 +1,10 @@
+streamlit
+scipy
+ploty
+pandas
+numpy
+python-dotenv
+google-generativeai
+openai
+tiktoken
+jinja2
