@@ -101,7 +101,7 @@ st.markdown(
 <style>
 /* ─── App Background ─── */
 .stApp {
-    background: linear-gradient(160deg,#1a0a0e 0%,#0d0d1a 50%,#1a0a0e 100%);
+    background: linear-gradient(160deg, #0d1f12 0%, #0a1810 50%, #0d1f12 100%);
 }
 [data-testid="stHeader"]{
     background:rgba(13,5,10,0.95);
