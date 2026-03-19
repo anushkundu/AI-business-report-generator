@@ -1,7 +1,7 @@
 # src/utils/llm_client.py
 
 """
-LLM CLIENT — OpenAI + Google Gemini
+LLM CLIENT — Google Gemini (PRIMARY, FREE) + OpenAI (FALLBACK)
 Works locally (.env) and on Streamlit Cloud (secrets)
 """
 
@@ -47,11 +47,11 @@ except ImportError:
 
 class LLMClient:
     """
-    LLM client supporting OpenAI and Google Gemini.
+    LLM client supporting Google Gemini and OpenAI.
 
     Priority:
-    1. OpenAI (if key exists + has credits)
-    2. Gemini 2.5 Flash (FREE)
+    1. Gemini 2.5 Flash (FREE — primary)
+    2. OpenAI (paid — fallback only)
     """
 
     GEMINI_MODEL = "gemini-2.5-flash"
@@ -70,20 +70,9 @@ class LLMClient:
             "provider": "none",
         }
 
-        # ── Try OpenAI first ───────────────────────────
-        openai_key = os.getenv("OPENAI_API_KEY", "")
-        if OPENAI_AVAILABLE and openai_key:
-            try:
-                self.openai_client = OpenAI(api_key=openai_key)
-                self.provider = "openai"
-                self.session_stats["provider"] = "openai"
-                logger.info("✅ LLM Provider: OpenAI")
-            except Exception as e:
-                logger.warning(f"OpenAI init failed: {e}")
-
-        # ── Try Gemini as fallback ─────────────────────
+        # ── Try Gemini FIRST (FREE) ───────────────────
         google_key = os.getenv("GOOGLE_API_KEY", "")
-        if self.provider is None and GEMINI_AVAILABLE and google_key:
+        if GEMINI_AVAILABLE and google_key:
             try:
                 genai.configure(api_key=google_key)
                 self.gemini_model = genai.GenerativeModel(self.GEMINI_MODEL)
@@ -93,19 +82,29 @@ class LLMClient:
             except Exception as e:
                 logger.warning(f"Gemini init failed: {e}")
 
-        # Also keep Gemini ready as fallback even if OpenAI is primary
-        if self.provider == "openai" and GEMINI_AVAILABLE and google_key:
+        # ── Try OpenAI as fallback ─────────────────────
+        openai_key = os.getenv("OPENAI_API_KEY", "")
+        if self.provider is None and OPENAI_AVAILABLE and openai_key:
             try:
-                genai.configure(api_key=google_key)
-                self.gemini_model = genai.GenerativeModel(self.GEMINI_MODEL)
-                logger.info("Gemini ready as fallback")
+                self.openai_client = OpenAI(api_key=openai_key)
+                self.provider = "openai"
+                self.session_stats["provider"] = "openai"
+                logger.info("✅ LLM Provider: OpenAI (fallback)")
+            except Exception as e:
+                logger.warning(f"OpenAI init failed: {e}")
+
+        # Also keep OpenAI ready as fallback even if Gemini is primary
+        if self.provider == "gemini" and OPENAI_AVAILABLE and openai_key:
+            try:
+                self.openai_client = OpenAI(api_key=openai_key)
+                logger.info("OpenAI ready as fallback")
             except Exception:
                 pass
 
         if self.provider is None:
             logger.warning(
                 "No LLM provider available. "
-                "Set OPENAI_API_KEY or GOOGLE_API_KEY"
+                "Set GOOGLE_API_KEY or OPENAI_API_KEY"
             )
 
         # Token counter
@@ -129,7 +128,29 @@ class LLMClient:
                  json_mode: bool = False) -> str:
         """Generate text from best available provider."""
 
-        if self.provider == "openai":
+        if self.provider == "gemini":
+            try:
+                return self._generate_gemini(
+                    prompt, system_prompt, temperature,
+                    max_tokens, json_mode
+                )
+            except Exception as e:
+                error_msg = str(e).lower()
+                # If Gemini fails (quota/rate limit), try OpenAI
+                if any(word in error_msg for word in
+                       ["quota", "429", "rate", "limit", "exhausted"]):
+                    logger.warning("Gemini rate limited — trying OpenAI fallback")
+                    if self.openai_client:
+                        try:
+                            return self._generate_openai(
+                                prompt, system_prompt, temperature,
+                                max_tokens, model, json_mode
+                            )
+                        except Exception as oe:
+                            logger.warning(f"OpenAI fallback also failed: {oe}")
+                raise
+
+        elif self.provider == "openai":
             try:
                 return self._generate_openai(
                     prompt, system_prompt, temperature,
@@ -137,10 +158,11 @@ class LLMClient:
                 )
             except Exception as e:
                 error_msg = str(e).lower()
-                # If OpenAI fails (quota/billing), try Gemini
+                # If OpenAI fails (quota/billing/key), try Gemini
                 if any(word in error_msg for word in
-                       ["quota", "exceeded", "billing", "insufficient"]):
-                    logger.warning("OpenAI quota exceeded — switching to Gemini")
+                       ["quota", "exceeded", "billing", "insufficient",
+                        "invalid_api_key", "401"]):
+                    logger.warning("OpenAI failed — trying Gemini fallback")
                     if self.gemini_model:
                         self.provider = "gemini"
                         self.session_stats["provider"] = f"gemini ({self.GEMINI_MODEL}) FREE"
@@ -150,16 +172,10 @@ class LLMClient:
                         )
                 raise
 
-        elif self.provider == "gemini":
-            return self._generate_gemini(
-                prompt, system_prompt, temperature,
-                max_tokens, json_mode
-            )
-
         else:
             raise Exception(
                 "No LLM provider configured. "
-                "Add OPENAI_API_KEY or GOOGLE_API_KEY to .env or Streamlit secrets."
+                "Add GOOGLE_API_KEY or OPENAI_API_KEY to .env or Streamlit secrets."
             )
 
 
@@ -181,77 +197,7 @@ class LLMClient:
 
 
     # ═══════════════════════════════════════════════════════
-    # OPENAI
-    # ═══════════════════════════════════════════════════════
-
-    def _generate_openai(self, prompt, system_prompt,
-                          temperature, max_tokens,
-                          model, json_mode):
-        """Generate using OpenAI."""
-
-        model = model or config.MODEL_NAME
-        temperature = temperature if temperature is not None else config.TEMPERATURE
-        max_tokens = max_tokens or config.MAX_TOKENS
-
-        messages = []
-        if system_prompt:
-            messages.append({"role": "system", "content": system_prompt})
-        messages.append({"role": "user", "content": prompt})
-
-        kwargs = {
-            "model": model,
-            "messages": messages,
-            "temperature": temperature,
-            "max_tokens": max_tokens,
-        }
-
-        if json_mode:
-            kwargs["response_format"] = {"type": "json_object"}
-
-        last_error = None
-        for attempt in range(config.MAX_RETRIES):
-            try:
-                logger.info(
-                    f"OpenAI call #{self.session_stats['total_calls'] + 1} "
-                    f"(model={model}, attempt={attempt + 1})"
-                )
-
-                response = self.openai_client.chat.completions.create(**kwargs)
-                content = response.choices[0].message.content
-                in_tokens = response.usage.prompt_tokens
-                out_tokens = response.usage.completion_tokens
-
-                cost = self._calculate_cost(in_tokens, out_tokens, model)
-                self._track_call(model, in_tokens, out_tokens, cost)
-
-                logger.info(f"✅ OpenAI: {out_tokens} tokens, ${cost:.4f}")
-                return content
-
-            except RateLimitError as e:
-                last_error = e
-                error_msg = str(e).lower()
-
-                if "insufficient_quota" in error_msg or "exceeded" in error_msg:
-                    raise  # Let main generate() handle fallback
-
-                wait = config.RETRY_DELAY * (2 ** attempt)
-                logger.warning(f"Rate limited. Waiting {wait}s...")
-                time.sleep(wait)
-
-            except (APIConnectionError, APIError) as e:
-                last_error = e
-                wait = config.RETRY_DELAY * (2 ** attempt)
-                time.sleep(wait)
-
-            except Exception as e:
-                last_error = e
-                break
-
-        raise Exception(f"OpenAI failed: {last_error}")
-
-
-    # ═══════════════════════════════════════════════════════
-    # GEMINI (FREE)
+    # GEMINI (FREE — PRIMARY)
     # ═══════════════════════════════════════════════════════
 
     def _generate_gemini(self, prompt, system_prompt,
@@ -313,6 +259,76 @@ class LLMClient:
                     time.sleep(config.RETRY_DELAY * (2 ** attempt))
 
         raise Exception(f"Gemini failed: {last_error}")
+
+
+    # ═══════════════════════════════════════════════════════
+    # OPENAI (FALLBACK)
+    # ═══════════════════════════════════════════════════════
+
+    def _generate_openai(self, prompt, system_prompt,
+                          temperature, max_tokens,
+                          model, json_mode):
+        """Generate using OpenAI (fallback)."""
+
+        model = model or config.MODEL_NAME
+        temperature = temperature if temperature is not None else config.TEMPERATURE
+        max_tokens = max_tokens or config.MAX_TOKENS
+
+        messages = []
+        if system_prompt:
+            messages.append({"role": "system", "content": system_prompt})
+        messages.append({"role": "user", "content": prompt})
+
+        kwargs = {
+            "model": model,
+            "messages": messages,
+            "temperature": temperature,
+            "max_tokens": max_tokens,
+        }
+
+        if json_mode:
+            kwargs["response_format"] = {"type": "json_object"}
+
+        last_error = None
+        for attempt in range(config.MAX_RETRIES):
+            try:
+                logger.info(
+                    f"OpenAI call #{self.session_stats['total_calls'] + 1} "
+                    f"(model={model}, attempt={attempt + 1})"
+                )
+
+                response = self.openai_client.chat.completions.create(**kwargs)
+                content = response.choices[0].message.content
+                in_tokens = response.usage.prompt_tokens
+                out_tokens = response.usage.completion_tokens
+
+                cost = self._calculate_cost(in_tokens, out_tokens, model)
+                self._track_call(model, in_tokens, out_tokens, cost)
+
+                logger.info(f"✅ OpenAI: {out_tokens} tokens, ${cost:.4f}")
+                return content
+
+            except RateLimitError as e:
+                last_error = e
+                error_msg = str(e).lower()
+
+                if "insufficient_quota" in error_msg or "exceeded" in error_msg:
+                    raise  # Let main generate() handle fallback to Gemini
+
+                wait = config.RETRY_DELAY * (2 ** attempt)
+                logger.warning(f"Rate limited. Waiting {wait}s...")
+                time.sleep(wait)
+
+            except (APIConnectionError, APIError) as e:
+                last_error = e
+                wait = config.RETRY_DELAY * (2 ** attempt)
+                time.sleep(wait)
+
+            except Exception as e:
+                last_error = e
+                break
+
+        raise Exception(f"OpenAI failed: {last_error}")
 
 
     # ═══════════════════════════════════════════════════════
