@@ -3,7 +3,7 @@
 """
 AI BUSINESS REPORT GENERATOR — PROFESSIONAL DASHBOARD
 ─────────────────────────────────────────────────────
-Crimson & Gold Theme · Tabbed Interface · Production Ready
+Light Professional Theme · Tabbed Interface · Production Ready
 """
 
 import streamlit as st
@@ -39,54 +39,54 @@ st.set_page_config(
 
 
 # ═══════════════════════════════════════════════════════════
-# HELPER — Style Plotly Charts (title on top, legend below)
+# HELPER — Style Plotly Charts (light professional theme)
 # ═══════════════════════════════════════════════════════════
 def style_plotly_chart(fig):
-    """Apply crimson/gold theme. Title stays on top, legend sits below x-axis."""
+    """Apply light professional theme to Plotly charts."""
     fig.update_layout(
         title=dict(
             y=0.97, x=0.5,
             xanchor="center", yanchor="top",
-            font=dict(size=14, color="#FFD700", family="Arial"),
+            font=dict(size=14, color="#1e3a5f", family="Inter, Arial"),
         ),
         legend=dict(
             orientation="h",
             yanchor="top", y=-0.22,
             xanchor="center", x=0.5,
-            font=dict(size=10, color="#FFE4B5"),
-            bgcolor="rgba(26,10,14,0.6)",
-            bordercolor="rgba(184,134,11,0.4)",
+            font=dict(size=10, color="#4a5568"),
+            bgcolor="rgba(255,255,255,0.9)",
+            bordercolor="rgba(226,232,240,0.8)",
             borderwidth=1,
         ),
         hoverlabel=dict(
-            bgcolor="#1a0a0e",
+            bgcolor="#ffffff",
             font_size=13,
-            font_family="Arial",
-            font_color="#FFD700",
-            bordercolor="#DC143C",
+            font_family="Inter, Arial",
+            font_color="#1e3a5f",
+            bordercolor="#3b82f6",
         ),
-        paper_bgcolor="rgba(15,8,12,0.9)",
-        plot_bgcolor="rgba(20,10,15,0.7)",
-        font=dict(color="#FFE4B5", family="Arial", size=11),
+        paper_bgcolor="rgba(255,255,255,0.95)",
+        plot_bgcolor="rgba(248,250,252,0.9)",
+        font=dict(color="#4a5568", family="Inter, Arial", size=11),
         margin=dict(t=60, b=100, l=55, r=25),
         colorway=[
-            "#DC143C", "#FFD700", "#FF6347", "#DAA520",
-            "#FF4500", "#FFA500", "#CD853F", "#B22222",
-            "#FF69B4", "#DEB887",
+            "#3b82f6", "#10b981", "#f59e0b", "#ef4444",
+            "#8b5cf6", "#06b6d4", "#ec4899", "#f97316",
+            "#14b8a6", "#6366f1",
         ],
     )
     try:
         fig.update_xaxes(
-            gridcolor="rgba(184,134,11,0.1)",
-            color="#DAA520",
-            linecolor="rgba(184,134,11,0.25)",
-            tickfont=dict(color="#DAA520", size=10),
+            gridcolor="rgba(226,232,240,0.6)",
+            color="#64748b",
+            linecolor="rgba(226,232,240,0.8)",
+            tickfont=dict(color="#64748b", size=10),
         )
         fig.update_yaxes(
-            gridcolor="rgba(184,134,11,0.1)",
-            color="#DAA520",
-            linecolor="rgba(184,134,11,0.25)",
-            tickfont=dict(color="#DAA520", size=10),
+            gridcolor="rgba(226,232,240,0.6)",
+            color="#64748b",
+            linecolor="rgba(226,232,240,0.8)",
+            tickfont=dict(color="#64748b", size=10),
         )
     except Exception:
         pass
@@ -94,291 +94,689 @@ def style_plotly_chart(fig):
 
 
 # ═══════════════════════════════════════════════════════════
-# CRIMSON & GOLD — FULL THEME CSS
+# LIGHT PROFESSIONAL — FULL THEME CSS
 # ═══════════════════════════════════════════════════════════
 st.markdown(
     """
 <style>
+/* ══════ Google Font ══════ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
 /* ─── App Background ─── */
 .stApp {
-    background: linear-gradient(160deg, #0d1f12 0%, #0a1810 50%, #0d1f12 100%);
+    background: linear-gradient(160deg, #f0f4f8 0%, #e8eef4 50%, #f0f4f8 100%);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 [data-testid="stHeader"]{
-    background:rgba(13,5,10,0.95);
-    border-bottom:2px solid #DC143C;
+    background: rgba(255,255,255,0.95);
+    border-bottom: 1px solid #e2e8f0;
+    backdrop-filter: blur(10px);
 }
 
 /* ─── Sidebar ─── */
 [data-testid="stSidebar"]{
-    background:linear-gradient(180deg,#1a0a0e,#0d0510);
-    border-right:2px solid #B8860B;
+    background: linear-gradient(180deg, #1e3a5f 0%, #1a2e4a 100%);
+    border-right: none;
+    box-shadow: 4px 0 20px rgba(30,58,95,0.15);
 }
 [data-testid="stSidebar"] .stMarkdown,
 [data-testid="stSidebar"] label,
 [data-testid="stSidebar"] span,
-[data-testid="stSidebar"] p{color:#FFE4B5!important}
-
-/* ─── Headers ─── */
-.main-header{
-    font-size:2.6rem;font-weight:800;
-    background:linear-gradient(90deg,#DC143C,#FFD700,#DC143C);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-    text-align:center;padding:12px 0 4px;letter-spacing:1px;
+[data-testid="stSidebar"] p{
+    color: #e2e8f0 !important;
 }
-.sub-header{
-    text-align:center;color:#DAA520!important;
-    font-size:1.05rem;margin-bottom:20px;font-weight:300;
+[data-testid="stSidebar"] h1,
+[data-testid="stSidebar"] h2,
+[data-testid="stSidebar"] h3{
+    color: #ffffff !important;
 }
-h1,h2,h3{color:#FFD700!important}
-h4,h5{color:#DAA520!important}
+[data-testid="stSidebar"] hr{
+    border-color: rgba(255,255,255,0.15) !important;
+}
+[data-testid="stSidebar"] .stAlert{
+    background: rgba(255,255,255,0.1) !important;
+    border: 1px solid rgba(255,255,255,0.2) !important;
+    color: #e2e8f0 !important;
+}
+[data-testid="stSidebar"] [data-testid="stAlert"] p{
+    color: #e2e8f0 !important;
+}
 
-/* ─── Body text ─── */
-p,span,label,li,
+/* ─── Hero Header Box ─── */
+.hero-box{
+    background: linear-gradient(135deg, #1e3a5f 0%, #2c5282 50%, #1e3a5f 100%);
+    border-radius: 20px;
+    padding: 40px 30px 35px;
+    margin: 0 0 24px;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(30,58,95,0.25),
+                0 2px 8px rgba(30,58,95,0.1);
+    position: relative;
+    overflow: hidden;
+}
+.hero-box::before{
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 60%);
+    animation: heroGlow 8s ease-in-out infinite;
+}
+@keyframes heroGlow{
+    0%, 100%{ transform: translate(0, 0); }
+    50%{ transform: translate(30px, -20px); }
+}
+.hero-title{
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0 0 8px;
+    letter-spacing: -0.5px;
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.hero-subtitle{
+    font-size: 1.05rem;
+    color: rgba(226,232,240,0.9);
+    margin: 0;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    position: relative;
+    z-index: 1;
+}
+.hero-badge{
+    display: inline-block;
+    background: rgba(59,130,246,0.25);
+    border: 1px solid rgba(59,130,246,0.4);
+    border-radius: 20px;
+    padding: 4px 16px;
+    color: #93c5fd !important;
+    font-size: 0.78rem;
+    font-weight: 600;
+    margin-top: 14px;
+    position: relative;
+    z-index: 1;
+    letter-spacing: 0.5px;
+}
+
+/* ─── Section Headers ─── */
+h1{ color: #1e3a5f !important; font-weight: 800 !important; }
+h2{ color: #1e3a5f !important; font-weight: 700 !important; }
+h3{ color: #2c5282 !important; font-weight: 600 !important; }
+h4, h5{ color: #3b6998 !important; font-weight: 600 !important; }
+
+/* ─── Body Text ─── */
+p, span, label, li,
 .stMarkdown,
-[data-testid="stText"]{color:#FFE4B5!important}
-.stCaption,[data-testid="stCaption"]{color:#DAA520!important}
+[data-testid="stText"]{
+    color: #334155 !important;
+}
+.stCaption, [data-testid="stCaption"]{
+    color: #64748b !important;
+}
+
+/* ─── Glass Card (reusable) ─── */
+.glass-card{
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(226,232,240,0.8);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.04),
+                0 1px 4px rgba(0,0,0,0.02);
+    transition: all 0.3s ease;
+}
+.glass-card:hover{
+    box-shadow: 0 8px 28px rgba(0,0,0,0.08),
+                0 2px 8px rgba(0,0,0,0.04);
+    transform: translateY(-2px);
+}
+.glass-card-static{
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(226,232,240,0.8);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+}
+
+/* ─── Info Strip ─── */
+.info-strip{
+    background: linear-gradient(135deg, #eff6ff 0%, #f0f9ff 100%);
+    border: 1px solid #bfdbfe;
+    border-left: 4px solid #3b82f6;
+    border-radius: 10px;
+    padding: 14px 20px;
+    margin: 8px 0;
+}
+.info-strip p{ color: #1e40af !important; margin: 0; font-size: 0.9rem; }
 
 /* ─── Tabs ─── */
 .stTabs [data-baseweb="tab-list"]{
-    gap:4px;background:rgba(26,10,14,0.6);
-    border-radius:10px;padding:5px;border:1px solid #B8860B;
+    gap: 4px;
+    background: rgba(255,255,255,0.6);
+    border-radius: 12px;
+    padding: 5px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
 }
 .stTabs [data-baseweb="tab"]{
-    background:rgba(26,10,14,0.8);color:#FFE4B5!important;
-    border-radius:8px;border:1px solid transparent;
-    padding:10px 18px;font-weight:600;
+    background: transparent;
+    color: #64748b !important;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    padding: 10px 18px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.2s ease;
 }
 .stTabs [data-baseweb="tab"]:hover{
-    background:rgba(220,20,60,0.25);border-color:#DC143C;
+    background: rgba(59,130,246,0.08);
+    color: #3b82f6 !important;
+    border-color: rgba(59,130,246,0.2);
 }
 .stTabs [aria-selected="true"]{
-    background:linear-gradient(135deg,#DC143C,#8B0000)!important;
-    color:#FFD700!important;border-color:#FFD700!important;font-weight:700;
+    background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+    color: #ffffff !important;
+    border-color: transparent !important;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(59,130,246,0.3);
 }
-.stTabs [data-baseweb="tab-panel"]{padding-top:20px}
+.stTabs [data-baseweb="tab-panel"]{ padding-top: 20px; }
 
 /* ─── Metrics ─── */
 [data-testid="stMetric"]{
-    background:linear-gradient(135deg,rgba(220,20,60,0.12),rgba(184,134,11,0.08));
-    border:1px solid #B8860B;border-radius:10px;padding:15px;
+    background: rgba(255,255,255,0.9);
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 18px 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    transition: all 0.3s ease;
 }
-[data-testid="stMetricValue"]{color:#FFD700!important;font-weight:700}
-[data-testid="stMetricLabel"]{color:#FFE4B5!important}
-[data-testid="stMetricDelta"]{font-weight:600}
+[data-testid="stMetric"]:hover{
+    box-shadow: 0 6px 20px rgba(0,0,0,0.07);
+    transform: translateY(-2px);
+}
+[data-testid="stMetricValue"]{
+    color: #1e3a5f !important;
+    font-weight: 800 !important;
+    font-family: 'Inter', sans-serif !important;
+}
+[data-testid="stMetricLabel"]{
+    color: #64748b !important;
+    font-weight: 500 !important;
+}
+[data-testid="stMetricDelta"]{ font-weight: 600; }
 
 /* ─── Form Inputs ─── */
 .stSelectbox [data-baseweb="select"]>div,
 .stTextInput>div>div>input,
 .stNumberInput>div>div>input{
-    background-color:rgba(26,10,14,0.85)!important;
-    color:#FFE4B5!important;
-    border:1px solid #B8860B!important;
-    border-radius:8px!important;
+    background-color: #ffffff !important;
+    color: #334155 !important;
+    border: 1.5px solid #cbd5e1 !important;
+    border-radius: 10px !important;
+    font-family: 'Inter', sans-serif !important;
 }
-.stSelectbox label,.stTextInput label,.stRadio label{
-    color:#FFD700!important;font-weight:600;
+.stSelectbox [data-baseweb="select"]>div:focus-within,
+.stTextInput>div>div>input:focus,
+.stNumberInput>div>div>input:focus{
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.12) !important;
 }
-[data-baseweb="select"] span{color:#FFE4B5!important}
+.stSelectbox label, .stTextInput label, .stRadio label{
+    color: #1e3a5f !important;
+    font-weight: 600;
+}
+[data-baseweb="select"] span{ color: #334155 !important; }
 [data-baseweb="popover"] ul,
 [data-baseweb="menu"]{
-    background-color:#1a0a0e!important;
-    border:1px solid #DC143C!important;
+    background-color: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 10px !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
 }
-[data-baseweb="menu"] li{color:#FFE4B5!important}
-[data-baseweb="menu"] li:hover{background:rgba(220,20,60,0.3)!important}
+[data-baseweb="menu"] li{ color: #334155 !important; }
+[data-baseweb="menu"] li:hover{
+    background: rgba(59,130,246,0.08) !important;
+}
 
 /* ─── Buttons ─── */
 .stButton>button{
-    background:linear-gradient(90deg,#DC143C,#B22222)!important;
-    color:#FFD700!important;border:1px solid #FFD700!important;
-    border-radius:8px!important;font-weight:700!important;
-    transition:all .3s ease!important;
+    background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 10px !important;
+    font-weight: 600 !important;
+    font-family: 'Inter', sans-serif !important;
+    padding: 0.5rem 1.2rem !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 2px 8px rgba(59,130,246,0.25) !important;
 }
 .stButton>button:hover{
-    background:linear-gradient(90deg,#FFD700,#DAA520)!important;
-    color:#1a0a0e!important;border-color:#DC143C!important;
-    box-shadow:0 4px 15px rgba(220,20,60,0.4);
+    background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+    box-shadow: 0 6px 20px rgba(59,130,246,0.35) !important;
+    transform: translateY(-1px) !important;
 }
 button[kind="primary"]{
-    background:linear-gradient(90deg,#FFD700,#DAA520)!important;
-    color:#1a0a0e!important;border-color:#DC143C!important;
+    background: linear-gradient(135deg, #10b981, #059669) !important;
+    color: #ffffff !important;
+    box-shadow: 0 2px 8px rgba(16,185,129,0.3) !important;
+}
+button[kind="primary"]:hover{
+    background: linear-gradient(135deg, #059669, #047857) !important;
+    box-shadow: 0 6px 20px rgba(16,185,129,0.4) !important;
 }
 
 /* ─── Download Buttons ─── */
 .stDownloadButton>button{
-    background:linear-gradient(90deg,#B8860B,#DAA520)!important;
-    color:#1a0a0e!important;border:1px solid #FFD700!important;
-    border-radius:8px!important;font-weight:600!important;
+    background: linear-gradient(135deg, #1e3a5f, #2c5282) !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 10px !important;
+    font-weight: 600 !important;
+    box-shadow: 0 2px 8px rgba(30,58,95,0.2) !important;
 }
 .stDownloadButton>button:hover{
-    background:linear-gradient(90deg,#FFD700,#FFA500)!important;
-    box-shadow:0 4px 15px rgba(255,215,0,0.4);
+    background: linear-gradient(135deg, #2c5282, #3b6998) !important;
+    box-shadow: 0 6px 20px rgba(30,58,95,0.3) !important;
+    transform: translateY(-1px) !important;
 }
 
 /* ─── Expanders ─── */
 [data-testid="stExpander"]{
-    background:rgba(26,10,14,0.45);
-    border:1px solid rgba(184,134,11,0.5);border-radius:10px;
+    background: rgba(255,255,255,0.7);
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    overflow: hidden;
 }
-[data-testid="stExpander"] summary span{color:#FFD700!important;font-weight:600}
+[data-testid="stExpander"] summary span{
+    color: #1e3a5f !important;
+    font-weight: 600;
+}
 
 /* ─── File Uploader ─── */
 [data-testid="stFileUploader"]{
-    border:2px dashed #B8860B!important;border-radius:12px;
+    border: 2px dashed #cbd5e1 !important;
+    border-radius: 14px;
+    transition: all 0.3s ease;
 }
-[data-testid="stFileUploader"] label{color:#FFD700!important}
+[data-testid="stFileUploader"]:hover{
+    border-color: #3b82f6 !important;
+}
+[data-testid="stFileUploader"] label{
+    color: #1e3a5f !important;
+}
 [data-testid="stFileUploader"] section{
-    background:rgba(26,10,14,0.4)!important;border-radius:12px;padding:15px;
+    background: rgba(248,250,252,0.8) !important;
+    border-radius: 14px;
+    padding: 15px;
 }
 [data-testid="stFileUploader"] button{
-    background:rgba(220,20,60,0.3)!important;color:#FFD700!important;
-    border:1px solid #B8860B!important;border-radius:6px!important;
+    background: rgba(59,130,246,0.1) !important;
+    color: #3b82f6 !important;
+    border: 1px solid #93c5fd !important;
+    border-radius: 8px !important;
 }
 
 /* ─── Progress Bar ─── */
 .stProgress>div>div>div{
-    background:linear-gradient(90deg,#DC143C,#FFD700)!important;
+    background: linear-gradient(90deg, #3b82f6, #10b981) !important;
+    border-radius: 10px;
 }
 
 /* ─── Divider ─── */
-hr{border-color:rgba(184,134,11,0.3)!important}
+hr{ border-color: rgba(226,232,240,0.8) !important; }
 
 /* ─── Alerts ─── */
-[data-testid="stAlert"]{border-radius:8px!important}
+[data-testid="stAlert"]{ border-radius: 10px !important; }
 
 /* ─── DataFrames ─── */
-[data-testid="stDataFrame"]{border:1px solid rgba(184,134,11,0.35);border-radius:8px}
+[data-testid="stDataFrame"]{
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    overflow: hidden;
+}
 
 /* ─── Slider ─── */
-[data-testid="stSlider"] label{color:#FFD700!important}
+[data-testid="stSlider"] label{ color: #1e3a5f !important; }
 
 /* ─── Radio ─── */
-.stRadio>div label span{color:#FFE4B5!important}
+.stRadio>div label span{ color: #334155 !important; }
 
 /* ─── Scrollbar ─── */
-::-webkit-scrollbar{width:8px;height:8px}
-::-webkit-scrollbar-track{background:#0d0d1a}
-::-webkit-scrollbar-thumb{background:#DC143C;border-radius:4px}
-::-webkit-scrollbar-thumb:hover{background:#FFD700}
+::-webkit-scrollbar{ width: 8px; height: 8px; }
+::-webkit-scrollbar-track{ background: #f1f5f9; }
+::-webkit-scrollbar-thumb{
+    background: #94a3b8;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover{ background: #64748b; }
 
 /* ─── Domain Card Grid ─── */
 .domain-grid{
-    display:flex;flex-wrap:wrap;gap:10px;
-    justify-content:center;margin:12px 0 18px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin: 12px 0 18px;
 }
 .domain-card{
-    background:linear-gradient(135deg,rgba(220,20,60,0.1),rgba(184,134,11,0.06));
-    border:1px solid rgba(184,134,11,0.4);border-radius:12px;
-    padding:10px 14px;text-align:center;min-width:105px;flex:1;
-    transition:all .3s ease;
+    background: rgba(255,255,255,0.8);
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 12px 14px;
+    text-align: center;
+    min-width: 108px;
+    flex: 1;
+    transition: all 0.3s ease;
+    cursor: default;
 }
 .domain-card:hover{
-    border-color:#FFD700;
-    background:linear-gradient(135deg,rgba(220,20,60,0.2),rgba(184,134,11,0.12));
-    transform:translateY(-2px);box-shadow:0 4px 12px rgba(220,20,60,0.25);
+    border-color: #3b82f6;
+    background: rgba(59,130,246,0.06);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(59,130,246,0.12);
 }
-.domain-icon{font-size:1.6rem;display:block;margin-bottom:3px}
-.domain-name{color:#FFE4B5;font-weight:600;font-size:0.78rem}
+.domain-icon{ font-size: 1.6rem; display: block; margin-bottom: 4px; }
+.domain-name{
+    color: #334155;
+    font-weight: 600;
+    font-size: 0.78rem;
+}
 .format-note{
-    text-align:center;color:#B8860B;font-size:0.78rem;margin-top:4px;
+    text-align: center;
+    color: #64748b !important;
+    font-size: 0.78rem;
+    margin-top: 4px;
 }
 
 /* ─── About Tab — Problem Card ─── */
 .problem-card{
-    background:linear-gradient(135deg,rgba(220,20,60,0.12),rgba(184,134,11,0.06));
-    border:1px solid #B8860B;border-radius:14px;
-    padding:28px 32px;margin:10px 0 20px;
+    background: linear-gradient(135deg, #eff6ff, #f0f9ff);
+    border: 1px solid #bfdbfe;
+    border-left: 5px solid #3b82f6;
+    border-radius: 16px;
+    padding: 28px 32px;
+    margin: 10px 0 20px;
 }
-.problem-card h3{color:#FFD700!important;margin-bottom:12px;font-size:1.3rem}
-.problem-card p{color:#FFE4B5!important;line-height:1.8;font-size:0.95rem}
-.highlight-crimson{color:#DC143C!important;font-weight:700}
-.highlight-gold{color:#FFD700!important;font-weight:700}
+.problem-card h3{
+    color: #1e3a5f !important;
+    margin-bottom: 12px;
+    font-size: 1.3rem;
+}
+.problem-card p{
+    color: #334155 !important;
+    line-height: 1.8;
+    font-size: 0.95rem;
+}
+.highlight-blue{
+    color: #2563eb !important;
+    font-weight: 700;
+}
+.highlight-green{
+    color: #059669 !important;
+    font-weight: 700;
+}
 
-/* ─── About Tab — Architecture Steps ─── */
+/* ─── Architecture Steps ─── */
 .arch-step{
-    background:linear-gradient(135deg,rgba(220,20,60,0.1),rgba(184,134,11,0.06));
-    border:1px solid rgba(184,134,11,0.5);border-radius:12px;
-    padding:18px 10px;text-align:center;min-height:130px;
-    transition:all .3s ease;
+    background: rgba(255,255,255,0.9);
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 18px 10px;
+    text-align: center;
+    min-height: 130px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
 }
 .arch-step:hover{
-    border-color:#FFD700;transform:translateY(-3px);
-    box-shadow:0 6px 18px rgba(220,20,60,0.25);
+    border-color: #3b82f6;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(59,130,246,0.12);
 }
-.arch-icon{font-size:2rem;margin-bottom:6px}
-.arch-title{color:#FFD700;font-weight:700;font-size:0.9rem;margin-bottom:4px}
-.arch-desc{color:#DAA520;font-size:0.72rem;white-space:pre-line;line-height:1.4}
+.arch-icon{ font-size: 2rem; margin-bottom: 6px; }
+.arch-title{
+    color: #1e3a5f;
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+}
+.arch-desc{
+    color: #64748b;
+    font-size: 0.72rem;
+    white-space: pre-line;
+    line-height: 1.4;
+}
 .arch-arrow{
-    display:flex;align-items:center;justify-content:center;
-    font-size:1.8rem;color:#DC143C;height:130px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    color: #3b82f6;
+    height: 130px;
 }
 
-/* ─── About Tab — Feature Cards ─── */
+/* ─── Feature Cards ─── */
 .feature-card{
-    background:linear-gradient(135deg,rgba(220,20,60,0.1),rgba(184,134,11,0.06));
-    border:1px solid rgba(184,134,11,0.4);border-radius:12px;
-    padding:22px 18px;text-align:center;margin-bottom:12px;
-    transition:all .3s ease;min-height:160px;
+    background: rgba(255,255,255,0.9);
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 24px 18px;
+    text-align: center;
+    margin-bottom: 12px;
+    transition: all 0.3s ease;
+    min-height: 160px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
 }
 .feature-card:hover{
-    border-color:#FFD700;transform:translateY(-2px);
-    box-shadow:0 4px 14px rgba(220,20,60,0.2);
+    border-color: #3b82f6;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(59,130,246,0.12);
 }
-.feature-icon{font-size:2.2rem;margin-bottom:8px}
-.feature-value{color:#FFD700;font-size:1.5rem;font-weight:800;margin-bottom:4px}
-.feature-label{color:#FFE4B5;font-size:0.85rem;font-weight:600;margin-bottom:4px}
-.feature-sub{color:#DAA520;font-size:0.72rem}
+.feature-icon{ font-size: 2.2rem; margin-bottom: 10px; }
+.feature-value{
+    color: #1e3a5f;
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 4px;
+}
+.feature-label{
+    color: #334155;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+.feature-sub{
+    color: #64748b;
+    font-size: 0.72rem;
+    line-height: 1.4;
+}
 
-/* ─── About Tab — Tech Pills ─── */
+/* ─── Tech Pills ─── */
 .tech-pill{
-    display:inline-block;
-    background:linear-gradient(135deg,rgba(220,20,60,0.2),rgba(184,134,11,0.1));
-    border:1px solid rgba(184,134,11,0.5);border-radius:20px;
-    padding:6px 16px;margin:4px;color:#FFD700!important;
-    font-size:0.82rem;font-weight:600;
-    transition:all .3s ease;
+    display: inline-block;
+    background: linear-gradient(135deg, #eff6ff, #f0fdf4);
+    border: 1px solid #bfdbfe;
+    border-radius: 20px;
+    padding: 6px 16px;
+    margin: 4px;
+    color: #1e40af !important;
+    font-size: 0.82rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
 }
 .tech-pill:hover{
-    background:linear-gradient(135deg,rgba(220,20,60,0.35),rgba(184,134,11,0.2));
-    border-color:#FFD700;transform:scale(1.05);
+    background: linear-gradient(135deg, #dbeafe, #d1fae5);
+    border-color: #3b82f6;
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(59,130,246,0.15);
 }
 
-/* ─── About Tab — Profile Card ─── */
+/* ─── Profile Card ─── */
 .profile-card{
-    background:linear-gradient(135deg,rgba(220,20,60,0.1),rgba(184,134,11,0.06));
-    border:1px solid #B8860B;border-radius:14px;
-    padding:28px 32px;margin:20px 0;
+    background: rgba(255,255,255,0.9);
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 28px 32px;
+    margin: 20px 0;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.04);
 }
-.profile-card h3{color:#FFD700!important;margin:0 0 4px;font-size:1.25rem}
-.profile-card .subtitle{color:#DC143C!important;font-weight:600;margin:0 0 6px;font-size:0.9rem}
-.profile-card .edu{color:#DAA520!important;font-size:0.82rem;margin:0 0 10px;line-height:1.5}
+.profile-card h3{
+    color: #1e3a5f !important;
+    margin: 0 0 4px;
+    font-size: 1.25rem;
+}
+.profile-card .subtitle{
+    color: #3b82f6 !important;
+    font-weight: 600;
+    margin: 0 0 6px;
+    font-size: 0.9rem;
+}
+.profile-card .edu{
+    color: #64748b !important;
+    font-size: 0.82rem;
+    margin: 0 0 10px;
+    line-height: 1.5;
+}
 .profile-card a{
-    color:#FFD700!important;text-decoration:none;font-weight:600;
-    transition:color .2s;
+    color: #2563eb !important;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s;
 }
-.profile-card a:hover{color:#DC143C!important;text-decoration:underline}
+.profile-card a:hover{
+    color: #1d4ed8 !important;
+    text-decoration: underline;
+}
+
+/* ─── Stat Box (landing page) ─── */
+.stat-box{
+    background: rgba(255,255,255,0.9);
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 20px 16px;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+.stat-box:hover{
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.07);
+}
+.stat-number{
+    font-size: 2rem;
+    font-weight: 800;
+    color: #1e3a5f;
+    margin-bottom: 4px;
+}
+.stat-label{
+    font-size: 0.82rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+/* ─── Step Card (landing page how-it-works) ─── */
+.step-card{
+    background: rgba(255,255,255,0.9);
+    border: 1px solid #e2e8f0;
+    border-top: 4px solid #3b82f6;
+    border-radius: 14px;
+    padding: 22px 18px;
+    text-align: center;
+    min-height: 140px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+.step-card:hover{
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(59,130,246,0.1);
+    border-top-color: #10b981;
+}
+.step-number{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: #fff;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+}
+.step-title{
+    color: #1e3a5f;
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 6px;
+}
+.step-desc{
+    color: #64748b;
+    font-size: 0.78rem;
+    line-height: 1.4;
+}
 
 /* ─── Footer ─── */
 .custom-footer{
-    text-align:center;padding:30px 20px 20px;
-    margin-top:50px;
-    border-top:2px solid rgba(184,134,11,0.4);
-    background:linear-gradient(180deg,rgba(26,10,14,0.0),rgba(26,10,14,0.4));
+    text-align: center;
+    padding: 30px 20px 20px;
+    margin-top: 50px;
+    border-top: 1px solid #e2e8f0;
+    background: linear-gradient(180deg, rgba(248,250,252,0), rgba(241,245,249,0.8));
 }
-.custom-footer p{margin:0;padding:2px 0}
+.custom-footer p{ margin: 0; padding: 2px 0; }
 .custom-footer .footer-title{
-    font-size:0.92rem;color:#FFD700!important;font-weight:600;margin-bottom:6px;
+    font-size: 0.92rem;
+    color: #1e3a5f !important;
+    font-weight: 600;
+    margin-bottom: 6px;
 }
 .custom-footer .footer-tech{
-    font-size:0.8rem;color:#DAA520!important;margin-bottom:8px;
+    font-size: 0.8rem;
+    color: #64748b !important;
+    margin-bottom: 8px;
 }
 .footer-links a{
-    color:#DC143C!important;text-decoration:none;font-weight:600;
-    transition:color .2s;
+    color: #3b82f6 !important;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s;
 }
-.footer-links a:hover{color:#FFD700!important;text-decoration:underline}
+.footer-links a:hover{
+    color: #1d4ed8 !important;
+    text-decoration: underline;
+}
 .custom-footer .footer-copy{
-    font-size:0.72rem;color:#B8860B!important;margin-top:8px;
+    font-size: 0.72rem;
+    color: #94a3b8 !important;
+    margin-top: 8px;
+}
+
+/* ─── Section Divider with Label ─── */
+.section-divider{
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 24px 0 18px;
+}
+.section-divider::before,
+.section-divider::after{
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #cbd5e1, transparent);
+}
+.section-divider span{
+    color: #64748b !important;
+    font-size: 0.82rem;
+    font-weight: 600;
+    white-space: nowrap;
+    letter-spacing: 1px;
+    text-transform: uppercase;
 }
 </style>
 """,
@@ -387,14 +785,16 @@ hr{border-color:rgba(184,134,11,0.3)!important}
 
 
 # ═══════════════════════════════════════════════════════════
-# HEADER
+# HERO HEADER
 # ═══════════════════════════════════════════════════════════
 st.markdown(
-    '<h1 class="main-header">📊 AI Business Report Generator</h1>',
-    unsafe_allow_html=True,
-)
-st.markdown(
-    '<p class="sub-header">Upload your data · Get instant analysis · AI writes your report</p>',
+    """
+<div class="hero-box">
+    <p class="hero-title">📊 AI Business Report Generator</p>
+    <p class="hero-subtitle">Upload your data · Get instant analysis · AI writes your report</p>
+    <span class="hero-badge">✦ POWERED BY GPT-4 &nbsp;·&nbsp; MULTI-DOMAIN &nbsp;·&nbsp; ONE-CLICK REPORTS</span>
+</div>
+""",
     unsafe_allow_html=True,
 )
 
@@ -404,16 +804,22 @@ st.markdown(
 # ═══════════════════════════════════════════════════════════
 with st.sidebar:
     st.markdown("### ⚙️ Report Settings")
-    report_title = st.text_input("Report Title", "Monthly Business Performance Report")
+    report_title = st.text_input(
+        "Report Title", "Monthly Business Performance Report"
+    )
     report_period = st.text_input("Report Period", "January 2025")
     tone = st.selectbox("Narrative Tone", ["executive", "manager", "analyst"])
     sensitivity = st.select_slider(
-        "Anomaly Sensitivity", options=["low", "medium", "high"], value="medium"
+        "Anomaly Sensitivity",
+        options=["low", "medium", "high"],
+        value="medium",
     )
 
     st.divider()
     st.markdown("### 🚀 Quick Start")
-    use_sample = st.button("📊 Load Sample Sales Data", use_container_width=True)
+    use_sample = st.button(
+        "📊 Load Sample Sales Data", use_container_width=True
+    )
 
     st.divider()
     st.markdown("### 📋 Pipeline Status")
@@ -421,7 +827,7 @@ with st.sidebar:
 
 
 # ═══════════════════════════════════════════════════════════
-# MAIN — Dataset Type + File Upload (above tabs)
+# MAIN — Dataset Type + File Upload
 # ═══════════════════════════════════════════════════════════
 col_type, col_upload = st.columns([1, 2])
 
@@ -442,7 +848,9 @@ with col_type:
         st.caption(f"_{cfg.description}_")
         with st.expander("📋 Domain KPIs"):
             for kpi in cfg.kpi_definitions:
-                st.markdown(f"- {kpi.icon} **{kpi.name}**: _{kpi.description}_")
+                st.markdown(
+                    f"- {kpi.icon} **{kpi.name}**: _{kpi.description}_"
+                )
     else:
         st.caption("_System will auto-detect the domain_")
 
@@ -605,12 +1013,19 @@ if data_source:
 
         if profile.get("date_info"):
             di = profile["date_info"]
-            st.info(
-                f"📅 **Date Range:** {di['start_date']} → {di['end_date']}  ({di['total_days']} days)"
+            st.markdown(
+                f"""
+            <div class="info-strip">
+                <p>📅 <strong>Date Range:</strong> {di['start_date']} → {di['end_date']} &nbsp;({di['total_days']} days)</p>
+            </div>
+            """,
+                unsafe_allow_html=True,
             )
 
         with st.expander("👀 Preview Raw Data"):
-            st.dataframe(df.head(20), use_container_width=True, height=300)
+            st.dataframe(
+                df.head(20), use_container_width=True, height=300
+            )
 
         with st.expander("📋 Column Details"):
             col_data = []
@@ -625,7 +1040,9 @@ if data_source:
                     }
                 )
             st.dataframe(
-                pd.DataFrame(col_data), use_container_width=True, hide_index=True
+                pd.DataFrame(col_data),
+                use_container_width=True,
+                hide_index=True,
             )
 
     # ──────────────────────────────────────────────────
@@ -634,9 +1051,13 @@ if data_source:
     with tab_kpis:
         dc1, dc2 = st.columns([1, 2])
         with dc1:
-            st.success(f"{kpi_results['domain_icon']} **{kpi_results['domain_name']}**")
+            st.success(
+                f"{kpi_results['domain_icon']} **{kpi_results['domain_name']}**"
+            )
             if selected_domain_id == "auto":
-                st.caption("💡 _Auto-detected. Select manually for better accuracy._")
+                st.caption(
+                    "💡 _Auto-detected. Select manually for better accuracy._"
+                )
         with dc2:
             with st.expander("🔗 Column Mapping"):
                 if kpi_results.get("column_mapping"):
@@ -647,7 +1068,9 @@ if data_source:
                                     "Role": r.replace("_", " ").title(),
                                     "Column": f"`{c}`",
                                 }
-                                for r, c in kpi_results["column_mapping"].items()
+                                for r, c in kpi_results[
+                                    "column_mapping"
+                                ].items()
                             ]
                         )
                     )
@@ -665,13 +1088,21 @@ if data_source:
                             kd["format"].format(val),
                         )
         else:
-            st.warning("⚠️ No KPIs calculated. Select the correct dataset type.")
+            st.warning(
+                "⚠️ No KPIs calculated. Select the correct dataset type."
+            )
 
         if kpi_results.get("category_breakdown"):
-            st.markdown("### 📊 Breakdown by Category")
-            cat_tabs = st.tabs(list(kpi_results["category_breakdown"].keys()))
+            st.markdown(
+                '<div class="section-divider"><span>Category Breakdown</span></div>',
+                unsafe_allow_html=True,
+            )
+            cat_tabs = st.tabs(
+                list(kpi_results["category_breakdown"].keys())
+            )
             for cat_tab, (cat, cdata) in zip(
-                cat_tabs, kpi_results["category_breakdown"].items()
+                cat_tabs,
+                kpi_results["category_breakdown"].items(),
             ):
                 with cat_tab:
                     if cdata.get("insight"):
@@ -712,7 +1143,9 @@ if data_source:
                     for cn, cs in stats.items()
                 ]
                 st.dataframe(
-                    pd.DataFrame(rows), use_container_width=True, hide_index=True
+                    pd.DataFrame(rows),
+                    use_container_width=True,
+                    hide_index=True,
                 )
             else:
                 st.info("No summary statistics available.")
@@ -736,7 +1169,9 @@ if data_source:
                     else:
                         gb_df.columns = ["Name", "Value"]
                     st.dataframe(
-                        gb_df, use_container_width=True, hide_index=True
+                        gb_df,
+                        use_container_width=True,
+                        hide_index=True,
                     )
                     st.divider()
 
@@ -778,7 +1213,9 @@ if data_source:
                     if ct.get("insight"):
                         st.info(f"💡 {ct['insight']}")
                     if "table_df" in ct:
-                        st.dataframe(ct["table_df"], use_container_width=True)
+                        st.dataframe(
+                            ct["table_df"], use_container_width=True
+                        )
                     st.divider()
             else:
                 st.info("No cross-tabulations available.")
@@ -801,7 +1238,9 @@ if data_source:
                                 else ""
                             )
                             st.metric(
-                                item["name"], f"{item['total']:,.2f}", delta
+                                item["name"],
+                                f"{item['total']:,.2f}",
+                                delta,
                             )
                     with cb_col:
                         st.markdown("**📉 Bottom 3:**")
@@ -812,7 +1251,9 @@ if data_source:
                                 else ""
                             )
                             st.metric(
-                                item["name"], f"{item['total']:,.2f}", delta
+                                item["name"],
+                                f"{item['total']:,.2f}",
+                                delta,
                             )
                     if data.get("concentration"):
                         st.caption(
@@ -830,7 +1271,9 @@ if data_source:
                     emoji = (
                         "🟢"
                         if c["strength"] in ["very strong", "strong"]
-                        else "🟡" if c["strength"] == "moderate" else "🟠"
+                        else "🟡"
+                        if c["strength"] == "moderate"
+                        else "🟠"
                     )
                     st.markdown(
                         f"{emoji} **{c['role_1']}** ↔ **{c['role_2']}**: r = **{c['correlation']}** ({c['strength']})"
@@ -844,7 +1287,9 @@ if data_source:
     # TAB 4 — TRENDS & ANOMALIES
     # ──────────────────────────────────────────────────
     with tab_trends:
-        trend_sec, anom_sec = st.tabs(["📈 Trend Analysis", "⚠️ Anomaly Detection"])
+        trend_sec, anom_sec = st.tabs(
+            ["📈 Trend Analysis", "⚠️ Anomaly Detection"]
+        )
 
         with trend_sec:
             if trend_results.get("available"):
@@ -881,7 +1326,9 @@ if data_source:
                     ["📋 Summary", "📊 Growth", "🌡️ Seasonality"]
                 )
                 with tt1:
-                    st.markdown(f"**Overall:** {overall['interpretation']}")
+                    st.markdown(
+                        f"**Overall:** {overall['interpretation']}"
+                    )
                     if comparison.get("available"):
                         st.markdown(
                             f"**Comparison:** {comparison['interpretation']}"
@@ -910,10 +1357,18 @@ if data_source:
                             f"{growth['max_decline']['rate']:+.1f}%",
                         )
                         gc3.metric(
-                            "Volatility", f"{growth['volatility']:.1f}%"
+                            "Volatility",
+                            f"{growth['volatility']:.1f}%",
                         )
                         if growth.get("cagr") is not None:
-                            st.info(f"📊 **CAGR:** {growth['cagr']:+.1f}%")
+                            st.markdown(
+                                f"""
+                            <div class="info-strip">
+                                <p>📊 <strong>CAGR:</strong> {growth['cagr']:+.1f}%</p>
+                            </div>
+                            """,
+                                unsafe_allow_html=True,
+                            )
                 with tt3:
                     season = trend_results.get("seasonality", {})
                     if season.get("detected"):
@@ -923,7 +1378,11 @@ if data_source:
                         if season.get("monthly_pattern"):
                             st.dataframe(
                                 pd.DataFrame(
-                                    list(season["monthly_pattern"].items()),
+                                    list(
+                                        season[
+                                            "monthly_pattern"
+                                        ].items()
+                                    ),
                                     columns=["Month", "Avg"],
                                 ),
                                 use_container_width=True,
@@ -950,7 +1409,10 @@ if data_source:
 
             alerts = anomaly_results.get("alerts", [])
             if alerts:
-                st.markdown("### 🚨 Alerts")
+                st.markdown(
+                    '<div class="section-divider"><span>Alerts</span></div>',
+                    unsafe_allow_html=True,
+                )
                 for a in alerts[:8]:
                     if a["severity"] == "critical":
                         st.error(
@@ -969,7 +1431,9 @@ if data_source:
                             f"{a['emoji']} **{a['title']}** — {a['message']}"
                         )
             else:
-                st.success("✅ No significant anomalies. Data looks clean!")
+                st.success(
+                    "✅ No significant anomalies. Data looks clean!"
+                )
 
     # ──────────────────────────────────────────────────
     # TAB 5 — VISUALIZATIONS
@@ -1014,24 +1478,46 @@ if data_source:
                 "⚠️ **OpenAI API key not configured.** Add it to your `.env` file and restart."
             )
         else:
-            gc1, gc2 = st.columns(2)
+            # Config summary in a card
+            st.markdown(
+                f"""
+            <div class="glass-card-static" style="margin-bottom:20px;">
+                <div style="display:flex;justify-content:space-around;text-align:center;flex-wrap:wrap;gap:10px;">
+                    <div>
+                        <div style="font-size:0.75rem;color:#64748b;font-weight:500;">TONE</div>
+                        <div style="font-size:1rem;color:#1e3a5f;font-weight:700;">{tone.title()}</div>
+                    </div>
+                    <div>
+                        <div style="font-size:0.75rem;color:#64748b;font-weight:500;">PERIOD</div>
+                        <div style="font-size:1rem;color:#1e3a5f;font-weight:700;">{report_period}</div>
+                    </div>
+                    <div>
+                        <div style="font-size:0.75rem;color:#64748b;font-weight:500;">DOMAIN</div>
+                        <div style="font-size:1rem;color:#1e3a5f;font-weight:700;">{kpi_results.get('domain_name', 'Auto')}</div>
+                    </div>
+                    <div>
+                        <div style="font-size:0.75rem;color:#64748b;font-weight:500;">SENSITIVITY</div>
+                        <div style="font-size:1rem;color:#1e3a5f;font-weight:700;">{sensitivity.title()}</div>
+                    </div>
+                </div>
+            </div>
+            """,
+                unsafe_allow_html=True,
+            )
+
+            gc1, gc2 = st.columns([2, 1])
             with gc1:
                 gen_mode = st.radio(
                     "Generation Mode",
                     ["📝 Section by Section", "⚡ Full Report"],
+                    horizontal=True,
                 )
             with gc2:
-                st.caption(f"📊 Tone: **{tone.title()}**")
-                st.caption(f"📅 Period: **{report_period}**")
-                st.caption(
-                    f"🏢 Domain: **{kpi_results.get('domain_name', 'Auto')}**"
+                generate_clicked = st.button(
+                    "🚀 Generate AI Report",
+                    type="primary",
+                    use_container_width=True,
                 )
-
-            generate_clicked = st.button(
-                "🚀 Generate AI Report",
-                type="primary",
-                use_container_width=True,
-            )
 
             if generate_clicked:
                 analysis_bundle = {
@@ -1063,17 +1549,26 @@ if data_source:
                         ("executive_summary", "📋 Executive Summary"),
                         ("kpi_analysis", "📊 KPI Analysis"),
                         ("trend_analysis", "📈 Trend Analysis"),
-                        ("anomalies_alerts", "⚠️ Anomalies & Alerts"),
+                        (
+                            "anomalies_alerts",
+                            "⚠️ Anomalies & Alerts",
+                        ),
                         ("recommendations", "🎯 Recommendations"),
                     ]
 
                     report_sections = {}
-                    containers = {k: st.container() for k, _ in section_names}
-                    prepared = narrator._prepare_data_texts(analysis_bundle)
+                    containers = {
+                        k: st.container() for k, _ in section_names
+                    }
+                    prepared = narrator._prepare_data_texts(
+                        analysis_bundle
+                    )
 
                     for i, (key, display) in enumerate(section_names):
                         progress.progress(i / len(section_names))
-                        status_text.markdown(f"✍️ *Generating {display}...*")
+                        status_text.markdown(
+                            f"✍️ *Generating {display}...*"
+                        )
                         try:
                             if key == "executive_summary":
                                 content = narrator._generate_executive_summary(
@@ -1127,11 +1622,15 @@ if data_source:
 
                 # ── Quality Score + Download ──
                 if report_sections:
-                    st.markdown("---")
-                    st.markdown("### 📊 Report Quality")
+                    st.markdown(
+                        '<div class="section-divider"><span>Report Quality & Downloads</span></div>',
+                        unsafe_allow_html=True,
+                    )
 
                     scorer = ReportQualityScorer()
-                    qual = scorer.score_report(report_sections, analysis_bundle)
+                    qual = scorer.score_report(
+                        report_sections, analysis_bundle
+                    )
                     api_stats = llm.get_session_stats()
 
                     qc1, qc2, qc3 = st.columns(3)
@@ -1175,18 +1674,26 @@ if data_source:
                                 st.markdown(f"- {s}")
 
                     # ── DOWNLOADS ──
-                    st.markdown("---")
-                    st.markdown("### 📥 Download Report")
+                    st.markdown(
+                        '<div class="section-divider"><span>Download Report</span></div>',
+                        unsafe_allow_html=True,
+                    )
 
                     html_gen = HTMLReportGenerator()
                     html_report = html_gen.generate(
                         title=report_title,
                         period=report_period,
-                        domain_name=kpi_results.get("domain_name", "General"),
-                        domain_icon=kpi_results.get("domain_icon", "📊"),
+                        domain_name=kpi_results.get(
+                            "domain_name", "General"
+                        ),
+                        domain_icon=kpi_results.get(
+                            "domain_icon", "📊"
+                        ),
                         kpis=kpi_results,
                         narrative_sections=report_sections,
-                        chart_figures=chart_figures if chart_figures else [],
+                        chart_figures=(
+                            chart_figures if chart_figures else []
+                        ),
                         quality_score=qual,
                         llm_stats=api_stats,
                     )
@@ -1196,7 +1703,9 @@ if data_source:
                     md += f"**Generated:** {datetime.now().strftime('%B %d, %Y')}\n\n---\n\n"
                     for k, v in report_sections.items():
                         if k != "full_report":
-                            md += f"## {k.replace('_', ' ').title()}\n\n"
+                            md += (
+                                f"## {k.replace('_', ' ').title()}\n\n"
+                            )
                         md += v + "\n\n---\n\n"
 
                     dl1, dl2, dl3 = st.columns(3)
@@ -1238,22 +1747,25 @@ if data_source:
     with tab_about:
 
         # ── Problem Statement ──
-        st.markdown("""
+        st.markdown(
+            """
         <div class="problem-card">
             <h3>🎯 Problem Statement</h3>
             <p>
                 Business teams spend
-                <strong class="highlight-crimson">5–10 hours per week</strong>
+                <strong class="highlight-blue">5–10 hours per week</strong>
                 manually creating reports from raw data — profiling datasets, calculating KPIs,
                 identifying trends, detecting anomalies, building charts, and writing narratives.
-                This system uses <strong class="highlight-gold">AI-powered automation</strong>
+                This system uses <strong class="highlight-green">AI-powered automation</strong>
                 to transform any uploaded dataset into a complete, executive-ready business report
-                in under <strong class="highlight-gold">2 minutes</strong>, reducing manual effort by
-                <strong class="highlight-crimson">90%+</strong> and ensuring analytical consistency
+                in under <strong class="highlight-green">2 minutes</strong>, reducing manual effort by
+                <strong class="highlight-blue">90%+</strong> and ensuring analytical consistency
                 across all reporting.
             </p>
         </div>
-        """, unsafe_allow_html=True)
+        """,
+            unsafe_allow_html=True,
+        )
 
         st.markdown("<br>", unsafe_allow_html=True)
 
@@ -1277,17 +1789,23 @@ if data_source:
         for i, (icon, title, desc) in enumerate(arch_steps):
             with arch_cols[i]:
                 if title:
-                    st.markdown(f"""
+                    st.markdown(
+                        f"""
                     <div class="arch-step">
                         <div class="arch-icon">{icon}</div>
                         <div class="arch-title">{title}</div>
                         <div class="arch-desc">{desc}</div>
                     </div>
-                    """, unsafe_allow_html=True)
+                    """,
+                        unsafe_allow_html=True,
+                    )
                 else:
-                    st.markdown(f"""
+                    st.markdown(
+                        f"""
                     <div class="arch-arrow">{icon}</div>
-                    """, unsafe_allow_html=True)
+                    """,
+                        unsafe_allow_html=True,
+                    )
 
         st.markdown("<br>", unsafe_allow_html=True)
 
@@ -1295,12 +1813,42 @@ if data_source:
         st.markdown("### 🏆 Key Capabilities")
 
         cap_data = [
-            ("🧠", "7 Domains", "Auto-detected", "Sales · HR · Healthcare · Finance · E-Commerce · Ops · Marketing"),
-            ("📊", "Smart KPIs", "Domain-Aware", "Auto-calculates relevant metrics per dataset type"),
-            ("📈", "Trend Engine", "Multi-Signal", "Direction · Growth · Seasonality · Momentum analysis"),
-            ("⚠️", "Anomaly AI", "3 Sensitivity", "Statistical outliers · Time spikes · Business alerts"),
-            ("🖼️", "Auto Charts", "Up to 8", "AI-recommended Plotly visualizations per dataset"),
-            ("📝", "GPT-4 Writer", "5 Sections", "Executive Summary · KPIs · Trends · Anomalies · Recommendations"),
+            (
+                "🧠",
+                "7 Domains",
+                "Auto-detected",
+                "Sales · HR · Healthcare · Finance · E-Commerce · Ops · Marketing",
+            ),
+            (
+                "📊",
+                "Smart KPIs",
+                "Domain-Aware",
+                "Auto-calculates relevant metrics per dataset type",
+            ),
+            (
+                "📈",
+                "Trend Engine",
+                "Multi-Signal",
+                "Direction · Growth · Seasonality · Momentum analysis",
+            ),
+            (
+                "⚠️",
+                "Anomaly AI",
+                "3 Sensitivity",
+                "Statistical outliers · Time spikes · Business alerts",
+            ),
+            (
+                "🖼️",
+                "Auto Charts",
+                "Up to 8",
+                "AI-recommended Plotly visualizations per dataset",
+            ),
+            (
+                "📝",
+                "GPT-4 Writer",
+                "5 Sections",
+                "Executive Summary · KPIs · Trends · Anomalies · Recommendations",
+            ),
         ]
 
         for row_start in range(0, len(cap_data), 3):
@@ -1310,37 +1858,51 @@ if data_source:
                 if idx < len(cap_data):
                     icon, title, badge, desc = cap_data[idx]
                     with col:
-                        st.markdown(f"""
+                        st.markdown(
+                            f"""
                         <div class="feature-card">
                             <div class="feature-icon">{icon}</div>
                             <div class="feature-value">{title}</div>
                             <div class="feature-label">{badge}</div>
                             <div class="feature-sub">{desc}</div>
                         </div>
-                        """, unsafe_allow_html=True)
+                        """,
+                            unsafe_allow_html=True,
+                        )
 
         st.markdown("<br>", unsafe_allow_html=True)
 
         # ── Pipeline Features ──
         st.markdown("### ⚡ Full Pipeline Features")
 
+        st.markdown(
+            """
+        <div class="glass-card-static" style="margin-bottom:20px;">
+        """,
+            unsafe_allow_html=True,
+        )
         pipe_col1, pipe_col2 = st.columns(2)
         with pipe_col1:
-            st.markdown("""
+            st.markdown(
+                """
             - 📤 **Data Ingestion** — CSV & Excel auto-parsing with type inference
             - 🔍 **Data Profiling** — Schema, quality scores, date range detection
             - 🎯 **Smart KPIs** — Domain-specific metric calculation with formatting
             - 📋 **Descriptive Stats** — Summary, group-by, cross-tabs, correlations
             - 🏆 **Top / Bottom** — Performer analysis with concentration metrics
-            """)
+            """
+            )
         with pipe_col2:
-            st.markdown("""
+            st.markdown(
+                """
             - 📈 **Trend Detection** — Direction, growth rates, CAGR, momentum
             - 🌡️ **Seasonality** — Monthly pattern detection and analysis
             - ⚠️ **Anomaly Detection** — IQR outliers, Z-score spikes, business alerts
             - 🖼️ **Chart Recommender** — AI picks best chart types per data shape
             - 📝 **AI Narrator** — GPT-4 generates publication-ready report sections
-            """)
+            """
+            )
+        st.markdown("</div>", unsafe_allow_html=True)
 
         st.markdown("<br>", unsafe_allow_html=True)
 
@@ -1356,19 +1918,23 @@ if data_source:
         ]
         for col, (icon, title, desc) in zip(fmt_cols, fmt_data):
             with col:
-                st.markdown(f"""
+                st.markdown(
+                    f"""
                 <div class="feature-card">
                     <div class="feature-icon">{icon}</div>
                     <div class="feature-value" style="font-size:1.1rem">{title}</div>
                     <div class="feature-sub">{desc}</div>
                 </div>
-                """, unsafe_allow_html=True)
+                """,
+                    unsafe_allow_html=True,
+                )
 
         st.markdown("<br>", unsafe_allow_html=True)
 
         # ── Tech Stack ──
         st.markdown("### 🛠️ Technology Stack")
-        st.markdown("""
+        st.markdown(
+            """
         <div style="margin:12px 0 20px;text-align:center;">
             <span class="tech-pill">Python</span>
             <span class="tech-pill">Streamlit</span>
@@ -1383,7 +1949,9 @@ if data_source:
             <span class="tech-pill">OpenPyXL</span>
             <span class="tech-pill">python-dotenv</span>
         </div>
-        """, unsafe_allow_html=True)
+        """,
+            unsafe_allow_html=True,
+        )
 
         st.markdown("<br>", unsafe_allow_html=True)
 
@@ -1392,32 +1960,49 @@ if data_source:
 
         qa_cols = st.columns(3)
         qa_data = [
-            ("🎯", "Report Scoring", "Automated 4-dimension quality scoring: Data Grounding · Structure · Actionability · Conciseness"),
-            ("💰", "Cost Tracking", "Real-time token usage and API cost monitoring per session with formatted breakdowns"),
-            ("🔒", "Data Privacy", "All processing runs locally — your data never leaves the session. Only AI narrative calls use OpenAI API"),
+            (
+                "🎯",
+                "Report Scoring",
+                "Automated 4-dimension quality scoring: Data Grounding · Structure · Actionability · Conciseness",
+            ),
+            (
+                "💰",
+                "Cost Tracking",
+                "Real-time token usage and API cost monitoring per session with formatted breakdowns",
+            ),
+            (
+                "🔒",
+                "Data Privacy",
+                "All processing runs locally — your data never leaves the session. Only AI narrative calls use OpenAI API",
+            ),
         ]
         for col, (icon, title, desc) in zip(qa_cols, qa_data):
             with col:
-                st.markdown(f"""
+                st.markdown(
+                    f"""
                 <div class="feature-card">
                     <div class="feature-icon">{icon}</div>
                     <div class="feature-value" style="font-size:1rem">{title}</div>
                     <div class="feature-sub">{desc}</div>
                 </div>
-                """, unsafe_allow_html=True)
+                """,
+                    unsafe_allow_html=True,
+                )
 
         st.markdown("<br>", unsafe_allow_html=True)
 
         # ── About the Builder ──
         st.markdown("### 👨‍💻 Built By")
-        st.markdown("""
+        st.markdown(
+            """
         <div class="profile-card">
             <div style="display:flex;align-items:center;gap:1.5rem;">
                 <div style="
                     width:75px;height:75px;border-radius:50%;
-                    background:linear-gradient(135deg,#DC143C,#FFD700);
+                    background:linear-gradient(135deg, #3b82f6, #10b981);
                     display:flex;align-items:center;justify-content:center;
                     font-size:2.2rem;flex-shrink:0;
+                    box-shadow: 0 4px 16px rgba(59,130,246,0.3);
                 ">👨‍💻</div>
                 <div>
                     <h3>Anush Kundu</h3>
@@ -1429,19 +2014,21 @@ if data_source:
                     </p>
                     <div style="margin-top:10px;">
                         <a href="https://linkedin.com/in/anushkundu" target="_blank">🔗 LinkedIn</a>
-                        <span style="margin:0 10px;color:#B8860B;">|</span>
+                        <span style="margin:0 10px;color:#94a3b8;">|</span>
                         <a href="https://github.com/anushkundu" target="_blank">🐙 GitHub</a>
                     </div>
                 </div>
             </div>
         </div>
-        """, unsafe_allow_html=True)
-
+        """,
+            unsafe_allow_html=True,
+        )
 
     # ═══════════════════════════════════════════════════
-    # FOOTER (always visible when data is loaded)
+    # FOOTER
     # ═══════════════════════════════════════════════════
-    st.markdown("""
+    st.markdown(
+        """
     <div class="custom-footer">
         <p class="footer-title">
             📊 AI Business Report Generator — Intelligent Analytics Dashboard v1.0
@@ -1457,7 +2044,9 @@ if data_source:
             © 2025 Anush Kundu. All rights reserved.
         </p>
     </div>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
 
 
 # ═══════════════════════════════════════════════════════════
@@ -1465,43 +2054,125 @@ if data_source:
 # ═══════════════════════════════════════════════════════════
 else:
     st.markdown("---")
-    lc, rc = st.columns(2)
-    with lc:
-        st.markdown(
-            """
-        ### 🚀 How It Works
-        1. **Select** your dataset type above
-        2. **Upload** any business data (CSV / Excel)
-        3. **AI analyzes** → KPIs, trends, anomalies, charts
-        4. **GPT-4 writes** an executive-ready report
-        5. **Download** as HTML, Markdown or Plain Text
-        """
-        )
-    with rc:
-        st.markdown(
-            """
-        ### ✨ Key Features
-        - 🎯 Smart KPI detection per domain
-        - 📈 Automated trend & seasonality analysis
-        - ⚠️ Anomaly detection with severity alerts
-        - 📊 AI-recommended visualizations
-        - 📝 GPT-4 narrative report generation
-        - 📥 One-click HTML / MD / TXT download
-        """
-        )
 
+    # ── How It Works — Step Cards ──
+    st.markdown("### 🚀 How It Works")
+    step_cols = st.columns(5)
+    steps = [
+        ("1", "Select Domain", "Choose your dataset type for optimized analysis"),
+        ("2", "Upload Data", "Drop any CSV or Excel business dataset"),
+        ("3", "AI Analyzes", "KPIs, trends, anomalies & charts auto-generated"),
+        ("4", "GPT-4 Writes", "Executive-ready narrative report created"),
+        ("5", "Download", "Get HTML, Markdown, or Plain Text report"),
+    ]
+    for col, (num, title, desc) in zip(step_cols, steps):
+        with col:
+            st.markdown(
+                f"""
+            <div class="step-card">
+                <div class="step-number">{num}</div>
+                <div class="step-title">{title}</div>
+                <div class="step-desc">{desc}</div>
+            </div>
+            """,
+                unsafe_allow_html=True,
+            )
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # ── Stats Bar ──
+    st.markdown("### ✨ Platform Highlights")
+    stat_cols = st.columns(4)
+    highlights = [
+        ("7+", "Business Domains"),
+        ("< 2 min", "Report Generation"),
+        ("90%+", "Time Saved"),
+        ("5", "Report Sections"),
+    ]
+    for col, (val, label) in zip(stat_cols, highlights):
+        with col:
+            st.markdown(
+                f"""
+            <div class="stat-box">
+                <div class="stat-number">{val}</div>
+                <div class="stat-label">{label}</div>
+            </div>
+            """,
+                unsafe_allow_html=True,
+            )
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # ── Key Features in Cards ──
+    st.markdown("### 🎯 Key Features")
+    feat_cols = st.columns(3)
+    features = [
+        (
+            "📊",
+            "Smart KPI Detection",
+            "Automatically identifies and calculates domain-relevant metrics from your data",
+        ),
+        (
+            "📈",
+            "Trend & Seasonality",
+            "Detects direction, growth rates, CAGR, momentum, and seasonal patterns",
+        ),
+        (
+            "⚠️",
+            "Anomaly Detection",
+            "Statistical outliers, time-series spikes, and business-rule alerts",
+        ),
+        (
+            "🖼️",
+            "AI Visualizations",
+            "Recommends and builds the best chart types for your specific data shape",
+        ),
+        (
+            "📝",
+            "GPT-4 Narratives",
+            "Generates executive summary, KPI analysis, trend insights, and recommendations",
+        ),
+        (
+            "📥",
+            "One-Click Export",
+            "Download complete reports as styled HTML, Markdown, or Plain Text",
+        ),
+    ]
+    for i, (icon, title, desc) in enumerate(features):
+        with feat_cols[i % 3]:
+            st.markdown(
+                f"""
+            <div class="feature-card">
+                <div class="feature-icon">{icon}</div>
+                <div class="feature-value" style="font-size:1.05rem;">{title}</div>
+                <div class="feature-sub">{desc}</div>
+            </div>
+            """,
+                unsafe_allow_html=True,
+            )
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # ── Call to Action ──
     st.markdown(
         """
-    <div style='text-align:center;color:#B8860B;padding:30px;'>
-        <p style='font-size:1.15rem;'>👆 Select a dataset type and upload a file — or click
-        <strong style='color:#FFD700;'>Load Sample Sales Data</strong> in the sidebar to get started.</p>
+    <div class="glass-card-static" style="text-align:center;padding:32px 24px;">
+        <p style="font-size:1.15rem;color:#1e3a5f !important;margin-bottom:8px;font-weight:600;">
+            👆 Select a dataset type and upload a file — or click
+            <strong style="color:#3b82f6 !important;">Load Sample Sales Data</strong>
+            in the sidebar to get started.
+        </p>
+        <p style="font-size:0.85rem;color:#64748b !important;margin:0;">
+            Works with any tabular business data · No coding required · Results in under 2 minutes
+        </p>
     </div>
     """,
         unsafe_allow_html=True,
     )
 
-    # Footer on landing page too
-    st.markdown("""
+    # Footer on landing page
+    st.markdown(
+        """
     <div class="custom-footer">
         <p class="footer-title">
             📊 AI Business Report Generator — Intelligent Analytics Dashboard v1.0
@@ -1517,4 +2188,6 @@ else:
             © 2025 Anush Kundu. All rights reserved.
         </p>
     </div>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
