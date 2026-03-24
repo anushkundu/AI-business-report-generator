@@ -142,12 +142,12 @@ st.markdown(
     color: #fecdd3 !important;
 }
 
-/* ─── Hero Header Box ─── */
+/* ─── Hero Title Box (dark box — title only) ─── */
 .hero-box{
     background: linear-gradient(135deg, #4c0519 0%, #7f1d1d 30%, #991b1b 60%, #4c0519 100%);
     border-radius: 20px;
-    padding: 48px 30px 42px;
-    margin: 0 0 24px;
+    padding: 52px 30px 48px;
+    margin: 0 0 0;
     text-align: center;
     box-shadow: 0 8px 32px rgba(76,5,25,0.35),
                 0 2px 8px rgba(76,5,25,0.15);
@@ -169,39 +169,40 @@ st.markdown(
     50%{ transform: translate(30px, -20px); }
 }
 .hero-title{
-    font-size: 5.2rem;
+    font-size: 3.8rem;
     font-weight: 800;
-    color: #FFA500;
-    margin: 0 0 12px;
+    color: #ffffff;
+    margin: 0;
     letter-spacing: -0.5px;
     position: relative;
     z-index: 1;
-    text-shadow: 0 2px 12px rgba(0,0,0,0.35), 0 0 30px rgba(255,215,0,0.15);
+    text-shadow: 0 2px 12px rgba(0,0,0,0.35), 0 0 30px rgba(255,255,255,0.08);
+}
+
+/* ─── Hero Below-Box Area (subtitle + badge) ─── */
+.hero-below{
+    text-align: center;
+    padding: 18px 20px 8px;
+    margin: 0 0 24px;
 }
 .hero-subtitle{
-    font-size: 1.15rem;
-    color: #ffffff;
-    margin: 0;
-    font-weight: 400;
-    letter-spacing: 0.5px;
-    position: relative;
-    z-index: 1;
-    text-shadow: 0 1px 6px rgba(0,0,0,0.3);
+    font-size: 1.18rem;
+    color: #5c0a1a !important;
+    margin: 0 0 12px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
 }
 .hero-badge{
     display: inline-block;
-    background: rgba(255,215,0,0.2);
-    border: 1px solid rgba(255,215,0,0.45);
-    border-radius: 20px;
-    padding: 5px 18px;
-    color: #FFD700 !important;
+    background: linear-gradient(135deg, #fff1f2 0%, #fef2f2 100%);
+    border: 1.5px solid #f9a8b8;
+    border-radius: 24px;
+    padding: 7px 22px;
+    color: #881337 !important;
     font-size: 0.82rem;
     font-weight: 700;
-    margin-top: 16px;
-    position: relative;
-    z-index: 1;
     letter-spacing: 0.6px;
-    text-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 8px rgba(220,20,60,0.1);
 }
 
 /* ─── Section Headers ─── */
@@ -787,12 +788,14 @@ hr{ border-color: rgba(245,198,206,0.6) !important; }
 
 
 # ═══════════════════════════════════════════════════════════
-# HERO HEADER
+# HERO HEADER — SPLIT: Title in box, subtitle + badge below
 # ═══════════════════════════════════════════════════════════
 st.markdown(
     """
 <div class="hero-box">
     <p class="hero-title">📊 AI Business Report Generator</p>
+</div>
+<div class="hero-below">
     <p class="hero-subtitle">Upload your data · Get instant analysis · AI writes your report</p>
     <span class="hero-badge">✦ POWERED BY GPT-4 &nbsp;·&nbsp; MULTI-DOMAIN &nbsp;·&nbsp; ONE-CLICK REPORTS</span>
 </div>
