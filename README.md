@@ -102,7 +102,7 @@ ai-report-generator/
 └── data/
     └── sample_sales.csv            # Built-in sample dataset
 
----
+```
 
 
 
