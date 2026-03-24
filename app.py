@@ -47,7 +47,7 @@ def style_plotly_chart(fig):
         title=dict(
             y=0.97, x=0.5,
             xanchor="center", yanchor="top",
-            font=dict(size=14, color="#5c0a1a", family="Inter, Arial"),
+            font=dict(size=24, color="#5c0a1a", family="Inter, Arial"),
         ),
         legend=dict(
             orientation="h",
