@@ -36,7 +36,8 @@ Upload CSV/Excel
 ┌──────────────┐
 │ Data Loader │ → Auto-parse dates, clean columns, type inference
 └──────┬───────┘
-▼
+▼        
+
 ┌──────────────┐
 │ Data Profiler │ → Schema detection, quality score, null analysis
 └──────┬───────┘
@@ -137,6 +138,7 @@ ai-report-generator/
 │       └── logger.py               # Logging
 └── data/
     └── sample_sales.csv            # Built-in sample dataset
+
 📊 Dashboard Preview
 The Streamlit app has 7 tabs:
 
@@ -172,6 +174,7 @@ Report creation time	4+ hours	< 2 minutes
 Manual effort	100%	< 10%
 Domain accuracy	Generic (wrong charts/KPIs)	Domain-specific
 Cost to run	—	$0 (free-tier LLMs)
+
 👨‍💻 Author
 Anush Kundu — Data Scientist
 MSc Data Science, Kingston University London
