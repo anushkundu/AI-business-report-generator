@@ -129,40 +129,45 @@ Tab	What You See
 
 ## 🛠️ Tech Stack
 
-Layer	Technology
-
-Frontend	Streamlit
-
-Data Processing	Pandas, NumPy, SciPy
-
-Visualization	Plotly
-AI / LLM	Groq (free) · Google Gemini (free) · OpenAI GPT-4 (paid)
-Config Validation	Pydantic
-HTML Templating	Jinja2
-Excel Support	OpenPyXL
+| Layer | Technology |
+|--------|------------|
+| Frontend | Streamlit |
+| Data Processing | Pandas, NumPy, SciPy |
+| Visualization	| Plotly |
+| AI / LLM | Groq (free) · Google Gemini (free) · OpenAI GPT-4 (paid) |
+| Config Validation	| Pydantic | 
+| HTML Templating | Jinja2 |
+| Excel Support | OpenPyXL |
 
 
 ## 🔑 LLM Provider Setup
+
 The system supports 3 providers with automatic failover. You only need one:
 
-Provider	Cost	.env Variable	Notes
-Groq	Free	GROQ_API_KEY=gsk_...	Recommended — fast & free
-Gemini	Free	GEMINI_API_KEY=...	Google's free tier
-OpenAI	Paid	OPENAI_API_KEY=sk-...	GPT-4o, highest quality
+| Provider | Cost	| .env Variable	| Notes |
+|--------|------------|-----------|---------|
+| Groq	| Free	| GROQ_API_KEY=gsk_...	| Recommended — fast & free |
+| Gemini	| Free	| GEMINI_API_KEY=...	| Google's free tier |
+| OpenAI	| Paid	| OPENAI_API_KEY=sk-...	| GPT-4o, highest quality |
+
 If the primary provider fails, the system automatically retries with exponential backoff, then falls back to the next available provider.
 
 ## 📈 Impact
-Metric	Before	After
-Report creation time	4+ hours	< 2 minutes
-Manual effort	100%	< 10%
-Domain accuracy	Generic (wrong charts/KPIs)	Domain-specific
-Cost to run	—	$0 (free-tier LLMs)
+| Metric	| Before	| After |
+|--------|------------|-----------|
+| Report creation time	| 4+ hours	| < 2 minutes |
+| Manual effort	| 100%	 | < 10% |
+| Domain accuracy |	Generic (wrong charts/KPIs) |	Domain-specific |
+| Cost to run |	—	| $0 (free-tier LLMs) |
 
 ## 👨‍💻 Author
+
 Anush Kundu — Data Scientist
+
 MSc Data Science, Kingston University London
 
-📄 License
+## 📄 License
+
 MIT License — see LICENSE for details.
 
 
