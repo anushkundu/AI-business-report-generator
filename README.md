@@ -104,7 +104,56 @@ ai-report-generator/
 
 ```
 
+---
 
+📊 Dashboard Preview
+The Streamlit app has 7 tabs:
+
+Tab	What You See
+📊 Data Overview	Row/column counts, quality score, date range, raw preview
+🎯 Key Metrics	Domain-detected KPIs with formatting and category breakdowns
+📈 Analysis	Summary stats, domain analyses, cross-tabs, top/bottom performers, correlations
+📉 Trends & Anomalies	Trend direction + growth + seasonality / Anomaly alerts by severity
+🖼️ Visualizations	Up to 8 interactive Plotly charts organized by section
+📝 AI Report	Generate, score, and download the AI-written report
+ℹ️ About	Architecture, capabilities, tech stack
+
+
+🛠️ Tech Stack
+Layer	Technology
+Frontend	Streamlit
+Data Processing	Pandas, NumPy, SciPy
+Visualization	Plotly
+AI / LLM	Groq (free) · Google Gemini (free) · OpenAI GPT-4 (paid)
+Config Validation	Pydantic
+HTML Templating	Jinja2
+Excel Support	OpenPyXL
+
+
+🔑 LLM Provider Setup
+The system supports 3 providers with automatic failover. You only need one:
+
+Provider	Cost	.env Variable	Notes
+Groq	Free	GROQ_API_KEY=gsk_...	Recommended — fast & free
+Gemini	Free	GEMINI_API_KEY=...	Google's free tier
+OpenAI	Paid	OPENAI_API_KEY=sk-...	GPT-4o, highest quality
+If the primary provider fails, the system automatically retries with exponential backoff, then falls back to the next available provider.
+
+📈 Impact
+Metric	Before	After
+Report creation time	4+ hours	< 2 minutes
+Manual effort	100%	< 10%
+Domain accuracy	Generic (wrong charts/KPIs)	Domain-specific
+Cost to run	—	$0 (free-tier LLMs)
+👨‍💻 Author
+Anush Kundu — Data Scientist
+MSc Data Science, Kingston University London
+
+LinkedIn
+GitHub
+
+📄 License
+MIT License — see LICENSE for details.
 
 
 
