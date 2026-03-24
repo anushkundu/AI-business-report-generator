@@ -67,6 +67,8 @@ streamlit run app.py
 streamlit run app.py
 The app opens at http://localhost:8501. Upload any CSV/Excel or click Load Sample Sales Data in the sidebar.
 
+---
+
 📁 Project Structure
 text
 
@@ -99,6 +101,7 @@ ai-report-generator/
 │       └── logger.py               # Logging
 └── data/
     └── sample_sales.csv            # Built-in sample dataset
+
 ---
 
 
