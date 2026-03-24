@@ -28,6 +28,8 @@ Most auto-report tools treat every dataset the same — they slap "Revenue by X"
 | 📣 Marketing | **SUM** spend | CTR trend line | Spend |
 
 
+---
+
 ## ⚡ Key Features
 
 - **7 Business Domains** — Auto-detected or manually selected, each with custom KPIs, chart preferences, and vocabulary
@@ -43,7 +45,7 @@ Most auto-report tools treat every dataset the same — they slap "Revenue by X"
 
 ## 🚀 Quick Start
 
-
+```bash
 # Clone
 git clone https://github.com/YOUR_USERNAME/ai-report-generator.git
 cd ai-report-generator
@@ -57,6 +59,9 @@ pip install -r requirements.txt
 echo "GROQ_API_KEY=gsk_your_key_here" > .env
 # OR: GEMINI_API_KEY=...
 # OR: OPENAI_API_KEY=sk-...
+
+# Run
+streamlit run app.py
 
 # Run
 streamlit run app.py
