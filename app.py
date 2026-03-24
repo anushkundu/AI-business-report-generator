@@ -169,8 +169,8 @@ st.markdown(
     50%{ transform: translate(30px, -20px); }
 }
 .hero-title{
-    font-size: 3.8rem;
-    font-weight: 800;
+    font-size: 5.8rem;
+    font-weight: 1000;
     color: #ffffff;
     margin: 0;
     letter-spacing: -0.5px;
