@@ -27,50 +27,6 @@ Most auto-report tools treat every dataset the same — they slap "Revenue by X"
 | 🏭 Operations | **SUM** quantity | Lead time distribution | Quantity |
 | 📣 Marketing | **SUM** spend | CTR trend line | Spend |
 
----
-
-## 🏗️ Architecture
-Upload CSV/Excel
-│
-▼
-┌──────────────┐
-│ Data Loader │ → Auto-parse dates, clean columns, type inference
-└──────┬───────┘
-▼        
-
-┌──────────────┐
-│ Data Profiler │ → Schema detection, quality score, null analysis
-└──────┬───────┘
-▼
-┌──────────────────────────────────────┐
-│ Analysis Engine │
-│ ├── Smart KPI Calculator (per domain)│
-│ ├── Descriptive Analyzer │
-│ ├── Trend Detector │
-│ └── Anomaly Detector │
-└──────────────┬───────────────────────┘
-▼
-┌──────────────────────────────────────┐
-│ Visualization Engine │
-│ ├── Chart Recommender (domain-aware) │
-│ └── Chart Builder (Plotly) │
-└──────────────┬───────────────────────┘
-▼
-┌──────────────────────────────────────┐
-│ AI Narrative Engine │
-│ ├── Multi-provider LLM Client │
-│ ├── Report Narrator (5 sections) │
-│ └── Quality Scorer │
-└──────────────┬───────────────────────┘
-▼
-┌──────────────┐
-│ HTML Report │ → Download with embedded interactive charts
-└──────────────┘
-
-text
-
-
----
 
 ## ⚡ Key Features
 
@@ -87,7 +43,7 @@ text
 
 ## 🚀 Quick Start
 
-```bash
+
 # Clone
 git clone https://github.com/YOUR_USERNAME/ai-report-generator.git
 cd ai-report-generator
