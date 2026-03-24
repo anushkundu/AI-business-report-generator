@@ -67,7 +67,7 @@ def style_plotly_chart(fig):
         ),
         paper_bgcolor="rgba(255,255,255,0.95)",
         plot_bgcolor="rgba(252,248,248,0.9)",
-        font=dict(color="#4a5568", family="Inter, Arial", size=20),
+        font=dict(color="#4a5568", family="Inter, Arial", size=14),
         margin=dict(t=60, b=100, l=55, r=25),
         colorway=[
             "#dc143c", "#10b981", "#f59e0b", "#8b1a2b",
@@ -169,8 +169,8 @@ st.markdown(
     50%{ transform: translate(30px, -20px); }
 }
 .hero-title{
-    font-size: 5.8rem;
-    font-weight: 1000;
+    font-size: 7.8rem;
+    font-weight: 800;
     color: #ffffff;
     margin: 0;
     letter-spacing: -0.5px;
